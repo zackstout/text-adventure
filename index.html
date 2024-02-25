@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text type</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        font-family: "VT323";
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #terminal {
+        width: 80vw;
+        height: 75vh;
+        background: rgb(30, 30, 30);
+        padding: 1rem;
+        color: rgb(250, 250, 250);
+        text-shadow: 0 0 4px rgba(250, 250, 250, 0.5);
+        margin-top: 1rem;
+        border-radius: 4px;
+        overflow: scroll;
+      }
+
+      #terminal div {
+        margin: 0.5rem 0;
+      }
+
+      #buttons {
+        width: 90vw;
+        display: flex;
+        margin-top: 1rem;
+      }
+
+      button {
+        width: 50%;
+        background: gray;
+        color: white;
+        cursor: pointer;
+        font-family: "VT323";
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        opacity: 0.8;
+      }
+
+      button:hover {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="terminal">
+      <!-- <div>Hello hello world.</div>
+      <div>Please enter a script to execute.</div> -->
+
+      <div>
+        <span>[guest@local]# </span>
+        <span class="target"></span>
+      </div>
+
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+
+    <div id="buttons">
+      <!-- <button id="run">Run</button> -->
+      <!-- <button id="run">ls</button>
+      <button id="clear">exit</button> -->
+    </div>
+
+    <script>
+      /**
+       * Every time user makes  achoice...
+       * We close the buttons, spit out the text in response, then show a new input prompt and open new set of buttons.
+       *
+       *
+       * TODO: If user is at bottom of window, need to scroll for them when text is added.
+       */
+
+      let availableTokens = 1;
+
+      const firstTxt = `ls
+      \n\n
+      Listing files in current directory...
+      \n\n
+      README.md\n
+      approbate.exe\n
+      generateToken.sh`;
+
+      const options = [
+        {
+          id: 1,
+          choices: [
+            {
+              text: "Where am I?",
+              response: `pwd\n\n/home/guest`,
+              next: 1,
+            },
+            {
+              text: "What can I see?",
+              response: firstTxt,
+              next: 2,
+            },
+          ],
+        },
+        {
+          id: 2,
+          choices: [
+            {
+              text: "README.md",
+              response: `cat README.md\n\n
+              This is a test file.`,
+              next: 2,
+            },
+            {
+              text: "approbate.exe",
+              response: "Checking permissions...",
+              next: 2,
+            },
+            {
+              text: "What kind of file is generateToken.sh?",
+              response: firstTxt,
+              next: 2,
+            },
+          ],
+        },
+      ];
+
+      const makeButtons = (choices) => {
+        const buttons = document.getElementById("buttons");
+        buttons.innerHTML = "";
+        choices.forEach((choice) => {
+          const button = document.createElement("button");
+          button.innerHTML = choice.text;
+          button.addEventListener("click", async () => {
+            const target = Array.from(
+              document.getElementsByClassName("target")
+            ).at(-1);
+            buttons.innerHTML = "";
+            await fillIn(target, choice.response);
+            makeButtons(options[choice.next - 1].choices);
+          });
+          buttons.appendChild(button);
+        });
+      };
+
+      //
+      const fillIn = async (el, text) => {
+        let curr = "";
+
+        while (curr.length < text.length) {
+          //   console.log(text[curr.length].charCodeAt(0), text[curr.length]);
+          const code = text[curr.length].charCodeAt(0);
+          curr += text[curr.length];
+          if (code === 10) {
+            curr += "<br>";
+          }
+          el.innerHTML = curr;
+          const waitTime = Math.random() * 10 + 10;
+          await new Promise((resolve) => setTimeout(resolve, waitTime));
+        }
+
+        el.innerHTML += `<div>
+        <span>[guest@local]# </span>
+        <span class="target"></span>
+      </div>`;
+
+        return Promise.resolve();
+      };
+
+      window.onload = () => {
+        // const target = document.getElementById("target");
+        // fillIn(target, "Hello world!");
+        // document.getElementById("run").addEventListener("click", () => {
+        //   const target = document.getElementById("target");
+        //   fillIn(target, firstTxt);
+        // });
+
+        makeButtons(options[0].choices);
+      };
+    </script>
+  </body>
+</html>
