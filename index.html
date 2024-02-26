@@ -34,6 +34,7 @@
         margin-top: 1rem;
         border-radius: 4px;
         overflow: scroll;
+        font-size: 18px;
       }
 
       #terminal div {
@@ -44,10 +45,12 @@
         width: 90vw;
         display: flex;
         margin-top: 1rem;
+        flex-wrap: wrap;
       }
 
       button {
         width: 50%;
+        flex-shrink: 0;
         background: gray;
         color: white;
         cursor: pointer;
@@ -78,16 +81,6 @@
       <br />
       <br />
       <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
     </div>
 
     <div id="buttons">
@@ -102,31 +95,135 @@
        * We close the buttons, spit out the text in response, then show a new input prompt and open new set of buttons.
        *
        *
-       * TODO: If user is at bottom of window, need to scroll for them when text is added.
+       * [x] TODO: If user is at bottom of window, need to scroll for them when text is added.
+       * -- Eh not perfect, kind of jarring, maybe we should animate it? But it's ok for now.
+       * -- Oh hell yeah, doing it line by line is awesome. That feels great. It's just a little fast but oh well.
+       *       *
+       * [x] TODO: What if user chooses something as the "system" is typing? Oh easy. Don't show buttons until done.
+       *
+       * [ ] TODO: Some nice animation on buttons when they appear and disappear.
+       *
+       * [x] TODO: General button styling -- ok we got there with just wrapping -- I guess we could alter things if only 2 or 1 choice but it's fine.
+       *
+       * I kind of like the idea of having generic messages show up when they dont' have tokens. That's funny.
+       *
+       * Maybe an easy way to generate tokens with some funny confirmation messages.
+       *
+       * TODO: could be cool to have a "change theme" file.
+       *
+       * TODO: Some kind of intro with hearts or stars or something... like showing "progress"... going slower than current speed
+       *
+       * A password at some point... "BIG BOOBIES"
+       *
+       *
+       *
+       * Maybe we still do have different tiers of tokens... So that with easy tokens you can only get first tier messages.
+       * There should be some fun incentive for doing it the hard way, right?
+       * The higher tier ones could be like paragraphs, specific memories, etc.
        */
 
       let availableTokens = 1;
 
-      const firstTxt = `ls
-      \n\n
-      Listing files in current directory...
-      \n\n
+      const niceThings = [
+        "You're doing great!",
+        "You're a good person.",
+        "You're a good friend.",
+        "You're a good listener.",
+      ];
+
+      const realNiceThings = [
+        {
+          color: "blue",
+          message: "I love when you laugh, and especially when you cackle.",
+        },
+        {
+          color: "green",
+          message:
+            "I love that we know how to have a good time just being together.",
+        },
+        {
+          color: "green",
+          message: "I love your beautiful olive skin and gorgeous hair.",
+        },
+        {
+          color: "green",
+          message:
+            "I love that you help me figure out what to do when I don't know which we I'm s'posed to go.",
+        },
+        {
+          color: "green",
+          message:
+            "I love how gigantic your heart is, and how easily you extend care to others.",
+        },
+        {
+          color: "green",
+          message:
+            "I love how much you value friendship, and the care and thoughtfulness with which you treat your friends.",
+        },
+        {
+          color: "green",
+          message: "I love how you love Bubu, and how fiercely he loves you.",
+        },
+        {
+          color: "green",
+          message:
+            "I love how playful you are, and how much fun we have together.",
+        },
+        {
+          color: "green",
+          message: "I love your tetas grandes.",
+        },
+        {
+          color: "green",
+          message:
+            "I love your sense of adventure and your enthusiasm to get me out of the house and into new environments, exploring together.",
+        },
+        {
+          color: "green",
+          message: "I love caring for Bubu together.",
+        },
+        {
+          color: "green",
+          message: "I love it when you make music, and how good you are!",
+        },
+        {
+          color: "green",
+          message:
+            "I love it when you learn new things and are excited to share them with me.",
+        },
+        {
+          color: "green",
+          message: "I love it when you draw, and how good you are!",
+        },
+        {
+          color: "green",
+          message:
+            "I love I can make you feel more confident and help you see your own beauty and strength",
+        },
+      ];
+
+      // Or maybe just splice them as we pick them... that's probably easier
+      const usedRealNiceIndexes = [];
+
+      const firstTxt = `ls\n
       README.md\n
       approbate.exe\n
-      generateToken.sh`;
+      generateTokenEasy.sh\n
+      generateTokenHard.sh`;
 
       const options = [
         {
           id: 1,
           choices: [
             {
-              text: "Where am I?",
-              response: `pwd\n\n/home/guest`,
+              text: "pwd",
+              response: () => `pwd\n\n
+              ~/winky-bottoms/coding/fun/approbator-app-2`,
               next: 1,
             },
             {
-              text: "What can I see?",
-              response: firstTxt,
+              text: "ls",
+              response: () => firstTxt,
               next: 2,
             },
           ],
@@ -136,26 +233,175 @@
           choices: [
             {
               text: "README.md",
-              response: `cat README.md\n\n
-              This is a test file.`,
+              response: () => `cat README.md\n\n
+              We are proud to present the Approbator 2.0 (patent pending)!\n\n
+              This is a simple terminal-based application that will provide you with positive affirmations and encouragement.\n\n
+              To get started, simply run approbate.exe\n\n
+              If you need more tokens, you can generate them with generateTokenEasy.sh or generateTokenHard.sh\n\n
+              𓆩♡𓆪☆☆☆ Enjoy and have fun!☆☆☆𓆩♡𓆪`,
               next: 2,
             },
             {
               text: "approbate.exe",
-              response: "Checking permissions...",
+              response: () => {
+                if (availableTokens < 1) {
+                  const r = Math.floor(Math.random() * niceThings.length);
+                  return `Checking permissions...\n\n
+                  You need a token to run this file.\n\n
+                  But you are still worthy of love and respect. 💖\n\n
+                  Here is a nice message for you: \n\n
+                  ${niceThings[r]}`;
+                }
+                availableTokens--;
+                const r = Math.floor(Math.random() * realNiceThings.length);
+
+                const target = Array.from(
+                  document.getElementsByClassName("target")
+                ).at(-1);
+
+                // Shoot, we want to show JUST the message in this color...
+                // target.style.color = realNiceThings[r].color;
+                return `Checking permissions...\n
+                Congratulations! You have permission to run approbate.exe. \n\n
+                Fetching data...\n\n
+                Data fetched. \n\n
+                Displaying item number ${r + 1}:  \n\n
+                =============================\n\n
+                ${realNiceThings[r].message} \n\n
+                =============================\n\n
+                You have ${availableTokens} tokens remaining.`;
+              },
+
               next: 2,
             },
             {
-              text: "What kind of file is generateToken.sh?",
-              response: firstTxt,
+              text: "generateTokenEasy.sh",
+              response: () => {
+                return `generateTokenEasy.sh\n\n
+                Really? You want to take the easy way out? \n\n
+                You can do better than that. \n\n
+                You can earn tokens by doing good things for yourself and others. \n\n
+                Are you sure you want to generate a token?\n\n
+                Enter password:`;
+              },
+              next: 3,
+            },
+            {
+              text: "generateTokenHard.sh",
+              response: () => {
+                return `Initializing...\n\n
+                You want to do it the hard way? \n\n
+                This is a text-based adventure where you can earn tokens by doing good things for yourself and others. \n\n
+                Welcome to the jungle. \n\n`;
+              },
+              next: 4,
+            },
+          ],
+        },
+        {
+          id: 3,
+          choices: [
+            {
+              text: "Just let me have this one. (Enter password)",
+              response: () => {
+                availableTokens++;
+                return `BIG BOOBIES\n\n
+                Okay, okay. I'll give you a token. Don't sweat it chief.\n\n
+              You have ${availableTokens} tokens now. \n\n`;
+              },
+              next: 2,
+            },
+            {
+              text: "I want to do it the hard way. (Cancel)",
+              response: () => `Now that's what I like to hear. \n\n
+              You can earn tokens by running generateTokenHard.sh \n\n
+              Good luck and Godspeed.`,
               next: 2,
             },
           ],
+        },
+        {
+          id: 4,
+          choices: [
+            {
+              text: "...Okay? (Y)",
+              response: () => {
+                return "You awaken in a strange land.";
+              },
+              next: 5,
+            },
+            // This is unnecessary but kind of funny I think
+            {
+              text: "I'm not ready for this. (N)",
+              response: () => {
+                return "You have died a horrible death. Game over.";
+              },
+              next: 6,
+            },
+          ],
+        },
+        // START OF GAME -- first 4 choices
+        {
+          id: 5,
+          choices: [
+            {
+              text: "",
+              response: () => {},
+              next: 7,
+            },
+            {
+              text: "",
+              response: () => {},
+              next: 8,
+            },
+            {
+              text: "",
+              response: () => {},
+              next: 9,
+            },
+            {
+              text: "",
+              response: () => {},
+              next: 10,
+            },
+          ],
+        },
+        // END OF GAME
+        {
+          id: 6,
+          choices: [
+            {
+              text: "Try again.",
+              response: () => {
+                return "You awaken in a strange land.";
+              },
+            },
+            {
+              text: "Exit game.",
+              response: () => {
+                return "Goodbye.";
+              },
+              next: 1,
+            },
+          ],
+        },
+        {
+          id: 7,
+        },
+        {
+          id: 8,
+        },
+        {
+          id: 9,
+        },
+        {
+          id: 10,
         },
       ];
 
       const makeButtons = (choices) => {
         const buttons = document.getElementById("buttons");
+        const terminal = document.getElementById("terminal");
         buttons.innerHTML = "";
         choices.forEach((choice) => {
           const button = document.createElement("button");
@@ -165,26 +411,31 @@
               document.getElementsByClassName("target")
             ).at(-1);
             buttons.innerHTML = "";
-            await fillIn(target, choice.response);
+            await fillIn(target, choice.response());
             makeButtons(options[choice.next - 1].choices);
+            // terminal.scrollTop = terminal.scrollHeight;
           });
           buttons.appendChild(button);
         });
       };
 
-      //
       const fillIn = async (el, text) => {
         let curr = "";
+
+        const terminal = document.getElementById("terminal");
+        const SPEED = 5;
 
         while (curr.length < text.length) {
           //   console.log(text[curr.length].charCodeAt(0), text[curr.length]);
           const code = text[curr.length].charCodeAt(0);
           curr += text[curr.length];
+          // 10 is the code for "/n", I suppose we could also just check that
           if (code === 10) {
             curr += "<br>";
+            terminal.scrollTop = terminal.scrollHeight;
           }
           el.innerHTML = curr;
-          const waitTime = Math.random() * 10 + 10;
+          const waitTime = Math.random() * SPEED + SPEED;
           await new Promise((resolve) => setTimeout(resolve, waitTime));
         }
 
