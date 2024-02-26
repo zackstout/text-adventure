@@ -86,9 +86,29 @@
       button:hover {
         opacity: 1;
       }
+
+      #bubu {
+        /* visibility: hidden; */
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        margin: 20rem;
+        border-radius: 4px;
+        background: rgb(30, 30, 30);
+        padding: 1rem;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 50;
+        color: rgb(230, 230, 230);
+
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <div id="bubu"></div>
     <div id="terminal">
       <div id="terminal-overlay"></div>
       <!-- <div>Hello hello world.</div>
@@ -138,6 +158,13 @@
        * TODO: Some kind of intro with hearts or stars or something... like showing "progress"... going slower than current speed
        *
        * A password at some point... "BIG BOOBIES"
+       *
+       *
+       * [x] TODO: Add a button to "Release the bubu" -- even if that's only option, it feels cool to press.
+       * Also breaks up the monotony of all the text before the release.
+       *
+       *
+       * [x] TODO: Need to change "getYouText" when it's you guys RIDING the big bubu
        *
        *
        *
@@ -354,38 +381,52 @@
         hasFish: false,
         fireIsLit: false,
         hasRoastFish: false,
+        hasEatenPie: false,
+        isReleasingTiny: false,
+        knowsSecret: false,
+        isReleasingDragon: false,
+        hasCrystal: false,
+
         regularBubu: {
           has: false,
           name: "Sir Bubu the Regular Sized",
           hasHat: false,
           hasBloodlust: false,
           hasGluttonous: false,
+          attacked: false,
         },
         tinyBubu: {
           has: false,
           name: "Ridiculously Small Bubu",
           hasFairyFriendship: false,
           hasFierceFace: false,
+          attacked: false,
         },
         bigBubu: {
           has: false,
           name: "Bubu the Gargantuan (Slumbering Titan)",
           hasLunarAttunement: false,
           hasWolfsong: false,
+          attacked: false,
         },
         dragonBubu: {
           has: false,
+          name: "Bubu the Dragon (Apollo Form)",
         },
       };
 
-      const getYouText = () => {
-        const arr = ["You"]
-          .concat([
-            gameData.regularBubu.has ? gameData.regularBubu.name : "",
-            gameData.tinyBubu.has ? gameData.tinyBubu.name : "",
-            gameData.bigBubu.has ? gameData.bigBubu.name : "",
-          ])
-          .filter(Boolean);
+      // Get text representing player and da bubus
+      const getYouText = (isRiding = false) => {
+        const theBubus = [
+          gameData.regularBubu.has ? gameData.regularBubu.name : "",
+          gameData.tinyBubu.has ? gameData.tinyBubu.name : "",
+        ];
+
+        if (!isRiding) {
+          theBubus.push(gameData.bigBubu.has ? gameData.bigBubu.name : "");
+        }
+
+        const arr = ["You"].concat(theBubus).filter(Boolean);
         return arr.reduce((acc, val, i) => {
           if (i === 0) {
             return val;
@@ -437,16 +478,23 @@
         gameData.regularBubu.has = false;
         gameData.tinyBubu.has = false;
         gameData.bigBubu.has = false;
+        gameData.regularBubu.attacked = false;
+        gameData.tinyBubu.attacked = false;
+        gameData.bigBubu.attacked = false;
         gameData.hasFish = false;
         gameData.fireIsLit = false;
         gameData.hasRoastFish = false;
+        gameData.hasEatenPie = false;
+        gameData.isReleasingTiny = false;
+        gameData.hasCrystal = false;
+        gameData.isReleasingDragon = false;
+        gameData.knowsSecret = false;
 
         return `begin\n\n
                 You awaken in a strange land. You are standing in a clearing. The sun is shining, and the air is warm.\n\n
                 There is a sweet scent of honeysuckle and peppermint. In the atmosphere ${adjs[0]} is commingled with ${adjs[1]}.\n\n
-                EGAD! YOU SUDDENLY REALIZE ALL YOUR BUBUS ARE MISSING! They must have run off...\n\n\n
-                You can see a path leading in each direction: north, east, west, and south.
-      `;
+                EGAD! YOU SUDDENLY REALIZE ALL YOUR BUBUS ARE MISSING! They must have run off...\n\n
+                You can see a path leading in each direction: north, east, west, and south.`;
       };
 
       const options = [
@@ -456,7 +504,7 @@
             {
               text: "pwd",
               response: () => `pwd\n\n
-                    ~/winky-bottoms/coding/fun/approbator-app-2`,
+                    ~/Users/winky-bottoms/coding/fun/approbator-app-2`,
               next: () => 1,
             },
             {
@@ -474,8 +522,9 @@
               response: () => `cat README.md\n\n
                     We are proud to present the Approbator 2.0 (patent pending)!\n\n
                     This is a simple terminal-based application that will provide you with positive affirmations and encouragement.\n\n
-                    To get started, simply run approbate.exe\n\n
-                    If you need more tokens, you can generate them with generateTokenEasy.sh or generateTokenHard.sh\n\n
+                    To get started, simply run approbate.exe.\n\n
+                    If you need more tokens, you can generate them with generateTokenEasy.sh or generateTokenHard.sh.\n\n
+                    (Due to a bug fix, we will no longer see duplicate approbations! This does not apply to stock approbations.)\n\n
                     𓆩♡𓆪☆☆☆ Enjoy and have fun!☆☆☆𓆩♡𓆪`,
               next: () => 2,
             },
@@ -524,7 +573,7 @@
                 return `generateTokenEasy.sh\n\n
                       Really? You want to take the easy way out? \n\n
                       You can do better than that. \n\n
-                      You can earn tokens by doing good things for yourself and others. \n\n
+                      You can earn tokens by rescuing lost Bubus. \n\n
                       Are you sure you want to generate a token?\n\n
                       Enter password:`;
               },
@@ -535,8 +584,8 @@
               response: () => {
                 return `generateTokenHard.sh\n
                       Initializing...\n\n
-                      This is a text-based adventure where you can earn tokens by doing good things for yourself and others. \n\n
-                      Welcome to the jungle...`;
+                      This is a text-based adventure where you can earn tokens by rescuing lost Bubus. \n\n
+                      Welcome to the jungle.`;
               },
               next: () => 4,
             },
@@ -569,6 +618,7 @@
         {
           id: 4,
           choices: () => [
+            // TODO: Maaaybe make this "Begin"??
             {
               text: "...Okay?",
               response: () => {
@@ -643,8 +693,8 @@
                 return `go south\n\n
                 ${getYouText()} walk southward along a sandy beach. The sun is warm and the air is salty.\n\n
                       You see a small boat bobbing in the water. You feel a sense of longing.\n\n
-                      Far in the distance, through the mist you can make out a small island.\n\n
-                      Its lighthouse sends out a comforting beam.`;
+                      Far in the distance, through the mist you can make out a small island. Its lighthouse sends out a comforting beam.\n\n
+                      There is a cliffside you think you'll be able to climb. You can hear waves crashing against the rocks.`;
               },
               next: () => 10,
             },
@@ -688,11 +738,7 @@
                     You descend the stairs and find yourself in a dimly lit room. You see a large machine with a series of levers and buttons.\n\n
                     It seems to be hooked up to a treadmill. You see a Bubu running on the treadmill, powering the generator.\n\n
                    It's ${gameData.regularBubu.name}!\n\n
-                   He is tied up and looks frightened. You untie him and he jumps into your arms.\n\n
-                     "Thank you, thank you," he says. "I thought I was a goner."\n\n
-                     "I was lured here by the scent of apple pie..."\n\n
-                     𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.regularBubu.name}.☆☆☆𓆩♡𓆪
-                    `;
+                   He is tied up and looks frightened.`;
                   }
                   return `look around\n\n
                     You take a look around the farm. It's a peaceful place. The farmer has a variety of crops growing, and a few animals milling about.\n\n
@@ -700,7 +746,8 @@
                     The farmer is still tending to his crops.\n\n
                     You walk around behind the barn and notice a generator. It's humming quietly. There are some stairs leading down, with a locked door at the bottom.\n\n`;
                 },
-                next: () => 7,
+                next: () =>
+                  gameData.hasKey && !gameData.regularBubu.has ? 7 : 18,
               },
               {
                 text: "Leave.",
@@ -716,7 +763,7 @@
               options.unshift({
                 text: "Talk to the farmer.",
                 response: () => {
-                  return `talk to the farmer\n\n
+                  return `talk farmer\n\n
                       You approach the farmer. He flashes a friendly smile.\n\n
                       "Hello there, stranger," he says. "What brings you to my farm?"`;
                 },
@@ -724,28 +771,31 @@
               });
             }
 
-            if (
-              gameData.regularBubu.has &&
-              !gameData.regularBubu.hasBloodlust &&
-              !gameData.regularBubu.hasGluttonous
-            ) {
+            if (gameData.regularBubu.has) {
               options = [
                 {
                   text: "Leave.",
                   response: () => {
                     return `leave\n\n
-                    ${getYouText()} decide to leave the farm and continue on your journey.`;
+                    ${getYouText()} decide to leave the farm behind and continue on your journey.`;
                   },
                   next: () => 5,
                 },
-                // TODO
-                {
-                  text: "Feed Bubu the pie.",
-                },
-                {
-                  text: "Feed Bubu the farmer.",
-                },
               ];
+
+              if (!gameData.hasEatenPie) {
+                options.push({
+                  text: "Feed Bubu the pie",
+                  response: () => {
+                    gameData.hasEatenPie = true;
+                    return `feed bubu\n\n
+                    You go inside and take the pie from the counter.\n\n
+                    "Ah, of course. How could I forget. The reason I came here in the first place," says ${gameData.regularBubu.name}.\n\n
+                    He takes the pie from you and devours it in a single bite. He smiles and licks his lips.`;
+                  },
+                  next: () => 7,
+                });
+              }
             }
 
             return options;
@@ -754,51 +804,67 @@
         // EAST
         {
           id: 8,
-          choices: () => [
-            {
-              text: "Ride the gondola.",
-              response: () => {
-                let txt = `${getYouText()} decide to ride the gondola to the top of the mountain. It's a peaceful ride, and the view is breathtaking.\n\n
+          choices: () => {
+            if (gameData.bigBubu.has) {
+              return [
+                {
+                  text: "Go back.",
+                  response: () => {
+                    return `${getYouText()} blow this popsicle stand.`;
+                  },
+                  next: () => 5,
+                },
+              ];
+            }
+            return [
+              {
+                text: "Ride the gondola.",
+                response: () => {
+                  let txt = `ride\n\n
+                ${getYouText()} decide to ride the gondola to the top of the mountain. It's a peaceful ride, and the view is breathtaking.\n\n
                 At the top you find a hermit who has been living there for years. He tells you that he has seen a Bubu wandering around the mountain.\n\n
                 "He seemed sleepy." the hermit says.\n\n
                 There is a fire circle with wood`;
-                if (gameData.fireIsLit) {
-                  txt += ` and a fire is crackling.`;
-                } else {
-                  txt += ` and a fire pit.`;
-                }
-                return txt;
+                  if (gameData.fireIsLit) {
+                    txt += ` and a fire is crackling.`;
+                  } else {
+                    txt += ` and a fire pit. "Yes, you can use my firepit," says the hermit. "But unfortunately I've lost my flint."`;
+                  }
+                  return txt;
+                },
+                next: () => 12,
               },
-              next: () => 12,
-            },
-            {
-              text: "Investigate the cave.",
-              response: () => {
-                return `You approach the foreboding cave. Large pawprints are leading toward it.\n\n
+              {
+                text: "Investigate the cave.",
+                response: () => {
+                  return `check cave\n\n
+                You approach the foreboding cave. Large pawprints are leading toward it.\n\n
                 You hear a low snoozing growl coming from inside.\n\n
                 You come to a gate. It's guarded by a strange little goblin. He looks at you with a glint in his eye.\n\n
                 "You'll need a key to get in here," he says. "And I don't think you have it."\n\n
                 He cackles and disappears into the darkness.\n\n
                 You notice a "Roast Fish Enthusiast" calendar hung up on the wall. It is flipped to a Plump-butt Porgy picture.`;
+                },
+                next: () => 13,
               },
-              next: () => 13,
-            },
-            {
-              text: "Explore the river.",
-              response: () => {
-                return `You follow the river upstream. It's a beautiful walk, and you feel at peace.\n\n
+              {
+                text: "Explore the river.",
+                response: () => {
+                  return `check river\n\n
+                You follow the river upstream. It's a beautiful walk, and you feel at peace.\n\n
                 You come across a small waterfall. You see a fish swimming in the pool below.`;
+                },
+                next: () => 17,
               },
-              next: () => 17,
-            },
-            {
-              text: "Go back.",
-              response: () => {
-                return `${getYouText()} blow this popsicle stand.`;
+              {
+                text: "Go back.",
+                response: () => {
+                  return `${getYouText()} blow this popsicle stand.`;
+                },
+                next: () => 5,
               },
-              next: () => 5,
-            },
-          ],
+            ];
+          },
         },
         // WEST
         {
@@ -823,6 +889,22 @@
                 },
               ];
             }
+
+            if (gameData.isReleasingTiny) {
+              return [
+                {
+                  text: "Release the bubu",
+                  response: () => {
+                    gameData.isReleasingTiny = false;
+                    return `free bubu\n\n
+                    "${gameData.tinyBubu.name}, what are we doing here?" you ask.\n\n
+                            "We're getting the eff outta here," says ${gameData.tinyBubu.name}. "I've had enough of these fairy freaks."\n\n
+                            𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.tinyBubu.name}.☆☆☆𓆩♡𓆪`;
+                  },
+                  next: () => 9,
+                },
+              ];
+            }
             return [
               {
                 text: "Eat a mushroom.",
@@ -833,27 +915,27 @@
                     gameData.mushroomsEaten++;
 
                     if (gameData.mushroomsEaten === 3) {
+                      // Yeah this is a huge amount of text. Can we break it up...???
+                      gameData.isReleasingTiny = true;
                       gameData.tinyBubu.has = true;
                       return `eat shroom\n\n
                       Aha. This mushroom was safe to eat as well!\n\n
                       The forest comes alive with thousands of small fiery lights. At first you are mesmerized.\n\n
                         But then you realize that they are forming a swarm and heading toward you!\n\n
-                        "Why have you trifled with our Fungi Forageable Feast, stranger?" rumbles a strange and booming voice.\n\n
-                        "We are preparing for the Fungi Foreagble Fiesta! You have nearly doomed us!"\n\n
+                        "Why have you trifled with our Fungi Forageable Fiesta Feast, stranger?" rumbles a strange and booming voice.\n\n
                         And then, slowly, the swarm of lights begins to dissipate.\n\n
                         A small pair of lights flutters toward you. As they near, you see that they are carrying a tiny chariot.\n\n
-                        "We are the Fungi Forageable Feast Fire Faires," says the tiny charioteer. "Our king wishes to speak with you."\n\n
+                        "We are the Fungi Foraging Fire Fairies," says the tiny charioteer. "Our king wishes to speak with you."\n\n
                         You are whisked away to a clearing where a tiny throne has been erected. A tiny king sits upon it.\n\n
-                        That king is one of your Bubus!\n\n
-                        𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.tinyBubu.name}.☆☆☆𓆩♡𓆪\n\n
-                        "Let's get the eff outta here," says ${gameData.tinyBubu.name}. "I've had enough of these fairy freaks."`;
+                        That king is one of your Bubus! It's ${gameData.tinyBubu.name}!`;
                     }
                     if (gameData.mushroomsEaten > 3) {
                       return `eat shroom\n\n
                       Aha. Another one safe to eat. It's like you're a mushroom expert now.\n\n
                       The fairies are visibly upset. But you don't care about their Fiesta. You have more important things to worry about.`;
                     }
-                    return `Aha. This mushroom was safe to eat. You can feel more eyes watching you.`;
+                    return `eat shroom\n\n
+                    Aha. This mushroom was safe to eat. You can feel more eyes watching you.`;
                   }
 
                   gameData.isDead = true;
@@ -883,20 +965,25 @@
             {
               text: "Climb up the cliffside.",
               response: () => {
-                return ``;
+                return `You muster the strength and climb up the cliffside. It's a bit of a struggle, but ${getYouText()} make it to the top.\n\n
+                You see a strange arrangement of rocks. It looks like it could be a ritual site, but you can't quite make out its purpose.`;
               },
+              next: () => 22,
             },
             {
               text: "Go to the beach.",
               response: () => {
-                return ``;
+                return `You head down to the beach. It's a beautiful moonlit night. The waves are crashing against the rocks.\n\n
+                You gaze at the glittering water and feel a sense of peace.`;
               },
+              next: () => 21,
             },
             {
               text: "Go back.",
               response: () => {
-                return ``;
+                return `${getYouText()} decide to head back to the clearing.`;
               },
+              next: () => 5,
             },
           ],
         },
@@ -913,11 +1000,11 @@
                 response: () => {
                   gameData.farmerIsIncapicated = true;
                   gameData.hasKey = true;
-                  return `bean\n\n
+                  return `bean farmer\n\n
                   You punch the farmer in the face. He falls to the ground, unconscious.\n\n
                   Something tells you he deserved it.\n\n
                   You search his clothes and find a mysterious key.\n\n
-                  (Mysterious Key added to inventory.)\n\n`;
+                  (Mysterious Key added to inventory.)`;
                 },
                 next: () => 7,
               },
@@ -933,25 +1020,21 @@
               {
                 text: "Claim to be the city magistrate.",
                 response: () => {
-                  return (
-                    `lie\n\n
+                  return `lie\n\n
                     You tell the farmer that you are the city magistrate, and you are here to inspect his farm.\n\n
                     He buys it hook, line and sinker.\n\n
-                    "I'm sorry, ma'am," he says. "I didn't realize. Please, come in."\n\n` +
-                    dinnerText
-                  );
+                    "I'm sorry, ma'am," he says. "I didn't realize. Please, come in."\n\n
+                    ${dinnerText}`;
                 },
                 next: () => 14,
               },
               {
                 text: "Flatter and charm him.",
                 response: () => {
-                  return (
-                    `flatter\n\n
+                  return `flatter\n\n
                     You tell the farmer that his farm is the most beautiful farm you have ever seen. You tell him that he is the most handsome farmer you have ever met.\n\n
-                    He blushes and stammers, "Oh, well, thank you, ma'am. I don't know what to say. Would you like to come inside for a meal?"\n\n` +
-                    dinnerText
-                  );
+                    He blushes and stammers, "Oh, well, thank you, ma'am. I don't know what to say. Would you like to come inside for a meal?"\n\n
+                    ${dinnerText}`;
                 },
                 next: () => 14,
               },
@@ -977,33 +1060,33 @@
           id: 12,
           choices: () => {
             const options = [
-              // TODO: Die here hahha
               {
                 text: "Admire the view.",
                 response: () => {
-                  return ``;
+                  return `You step closer to the edge and take a deep breath. The air is crisp and clean. You feel at peace.\n\n
+                  You look out over the land. It's beautiful. There are other mountains in the misty distance, and you can even see the ragged coastline.\n\n
+                  Suddenly, the rocks beneath your feet give way. You fall into the abyss.\n\n
+                  ${gameOverTxt()}`;
                 },
-                next: () => 12,
+                next: () => 6,
               },
               {
                 text: "Go back",
                 response: () => {
-                  // TODO
-
-                  return ``;
+                  return `${getYouText()} decide to head back down the mountain.`;
                 },
                 next: () => 8,
               },
             ];
 
-            if (gameData.tinyBubu.has) {
+            if (gameData.tinyBubu.has && !gameData.fireIsLit) {
               options.push({
-                text: "Ask Bubu to summon his fairy friends to make a fire.",
+                text: "Ask Bubu to summon his fairy friends.",
                 response: () => {
                   gameData.fireIsLit = true;
-                  // TODO
-
-                  return ``;
+                  return `You ask ${gameData.tinyBubu.name} to summon his fairy friends to make a fire. They do so, and it's a beautiful sight.\n\n
+                    (Fire is lit.)\n\n
+                    "Thank you, my friends," says ${gameData.tinyBubu.name}. "You have been most helpful."`;
                 },
                 next: () => 12,
               });
@@ -1014,6 +1097,7 @@
                 text: "Cook the fish.",
                 response: () => {
                   gameData.hasRoastFish = true;
+                  gameData.hasFish = false;
                   return `You add the fish to the fire and cook it. It smells delicious.\n\n
                   (Roasted fish added to inventory.)`;
                 },
@@ -1058,22 +1142,15 @@
               options.push({
                 text: "Offer the fish to the goblin.",
                 response: () => {
+                  gameData.bigBubu.has = true;
                   return `You offer the fish to the goblin. He looks at it hungrily.\n\n
                     "I'll let you in if you give me that fish," he says.\n\n
                     You hand it over, and he devours it in one bite.\n\n
                     "Mmm, that was good," he says. "You can go in now."\n\n
                     You enter the cave. It's dark and damp. You hear a low growling coming from the shadows.\n\n
-                    You approach and find a sleeping Bubu. It's ${
-                      gameData.bigBubu.name
-                    }!\n\n
-                    You wake him up and he stretches, yawning.\n\n
-                    "I was having the best dream," he says. "I was howling at the moon."\n\n
-                    𓆩♡𓆪☆☆☆Congratulations! You have found ${
-                      gameData.bigBubu.name
-                    }.☆☆☆𓆩♡𓆪
-                    "Let's ride, bud." ${getYouText()} hop on his back and he carries you out of the cave.`;
+                    You approach and find a sleeping Bubu. It's ${gameData.bigBubu.name}!`;
                 },
-                next: () => 8,
+                next: () => 20,
               });
             }
 
@@ -1158,10 +1235,10 @@
               next: () => 5,
             },
             {
-              text: "Leave.",
+              text: "Leave rudely.",
               response: () => {
                 return `You decide to jet out of this shithole.\n\n
-                "I'm outtie 5000, dickbags" you say, as you leave the farm.`;
+                "I'm outtie 5000, dickbag!" you say, as you leave the farm.`;
               },
               next: () => 5,
             },
@@ -1182,12 +1259,27 @@
         {
           id: 17,
           choices: () => {
+            const waterQuotes = [
+              "Water is life",
+              "Water is the essence of wetness",
+              "The way of water has no beginning and no end",
+              "If the earthly should forget you, tell the river, 'I am'",
+              "Water is life's matter and matrix",
+              "Eventually, all things merge into one, and a river runs through it",
+              "The water never formed to mind or voice",
+              "I should have been a pair of ragged claws, scuttling across the floors of silent seas",
+              "Oh! Blessed rage for order, pale Ramon",
+            ];
+
             const options = [
-              // TODO: Poems or some shit, different random quotes about water
               {
                 text: "Admire the water.",
                 response: () => {
-                  return `You admire the water. It truly is beautiful.`;
+                  return `You admire the water. It truly is beautiful.\n\n
+                  You are suddenly reminded of the words:
+                  "${
+                    waterQuotes[Math.floor(Math.random() * waterQuotes.length)]
+                  }."`;
                 },
                 next: () => 17,
               },
@@ -1217,20 +1309,316 @@
             return options;
           },
         },
+        // Release regular
         {
           id: 18,
+          choices: () => [
+            {
+              text: "Release the bubu",
+              response: () => {
+                return `free bubu\n\n
+                You untie him and he jumps into your arms.\n\n
+                     "Thank you, thank you," he says. "I thought I was a goner."\n\n
+                     "I was lured here by the scent of apple pie..."\n\n
+                     𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.regularBubu.name}.☆☆☆𓆩♡𓆪`;
+              },
+              next: () => 7,
+            },
+          ],
         },
+        // Release tiny
         {
           id: 19,
+          // Nevermind, this one is locked into its own node... ugh ok whatever
         },
+        // Release big
         {
           id: 20,
+          choices: () => [
+            {
+              text: "Release the bubu",
+              response: () => {
+                return `free bubu\n\n
+                You wake him up and he stretches, yawning.\n\n
+                    "I was having the best dream," he says. "I was howling at the moon."\n\n
+                    𓆩♡𓆪☆☆☆Congratulations! You have found ${
+                      gameData.bigBubu.name
+                    }.☆☆☆𓆩♡𓆪
+                    "Let's ride, bud." ${getYouText(
+                      true
+                    )} hop on his back and he carries you out of the cave.`;
+              },
+              next: () => 8,
+            },
+          ],
         },
+
+        // Beach (South/Ocean)
         {
           id: 21,
+          choices: () => {
+            const options = [
+              {
+                text: "Go back",
+                response: () => {
+                  return `${getYouText()} decide to head back to the base of the cliffside.`;
+                },
+                next: () => 10,
+              },
+              {
+                text: "Howl at moon",
+                response: () => {
+                  if (gameData.hasCrystal) {
+                    gameData.knowsSecret = true;
+                    return `${getYouText()} howl at the moon. You feel a strange energy coursing through you.\n\n
+                    Suddenly, a group of sea people emerge from the water. They are beautiful and ethereal.\n\n
+                    "You... you found the crystal?" they ask. "You have saved us. You are the chosen one."\n\n
+                    "Now we can return to our home, and you can return to yours. Thank you, friend."\n\n
+                    "We will never forget this. These are the secret words you must say, sacred to our people: Tiny (Boop Squiggs) Shorterly."\n\n`;
+                  }
+                  if (
+                    !gameData.regularBubu.has ||
+                    !gameData.tinyBubu.has ||
+                    !gameData.bigBubu.has
+                  ) {
+                    return `${getYouText()} howl at the moon. You feel a strange energy coursing through you.\n\n
+                        But you sense that more power is required. You need to find all of your Bubus.`;
+                  }
+                  // At this point we can summon the sea people
+                  return `${getYouText()} howl at the moon. You feel a strange energy coursing through you.\n\n
+                    Suddenly, a group of sea people emerge from the water. They are beautiful and ethereal.\n\n
+                    "We have been waiting for you," they say. "We have been watching you. You are the chosen one.\n\n
+                    We need to find our Dark Crystal of Power...it is very precious to us, but has become lost to the waves.\n\n
+                    Please, go to the island, and return it to us. We will reward you."\n\n
+                    The sea people disappear into the waves.`;
+                },
+                next: () => 21,
+              },
+            ];
+
+            if (gameData.bigBubu.has) {
+              options.push({
+                text: "Swim to island",
+                response: () => {
+                  // NOTE: this is copying next node, of cliff, because we want to go to the island
+                  let txt = `${getYouText(true)} climb onto ${
+                    gameData.bigBubu.name
+                  }.\n\n
+                    You head toward the island.
+                   `;
+                  if (gameData.hasCrystal) {
+                    txt += `\n\n
+                    All is peaceful on the little island now that the horrible Toad is vanquished.`;
+                  } else {
+                    txt += `\n\n
+                    When you arrive, you find a menacing toad monster. It's the size of a house.\n\n
+                    You see a large crystal around its neck.`;
+
+                    if (gameData.seaPeopleSummoned) {
+                      txt += ` It's the Dark Crystal of Power!`;
+                    }
+                  }
+
+                  return txt;
+                },
+                next: () => 23,
+              });
+            }
+
+            return options;
+          },
         },
+
+        // Cliff (South/Ocean)
         {
           id: 22,
+          choices: () => {
+            const options = [
+              {
+                text: "Jump off",
+                response: () => {
+                  if (gameData.bigBubu.has) {
+                    return `${getYouText(true)} climb onto ${
+                      gameData.bigBubu.name
+                    }.\n\n
+                    He jumps off the cliff and lands in the water. It's a refreshing swim.\n\n
+                    You head toward the island.\n\n
+                    When you arrive, you find a menacing toad monster. It's the size of a house.\n\n
+                    You see a large crystal around its neck. It's the Dark Crystal of Power.`;
+                  }
+                  return `You jump to your death. The craggy maw of rocks swallows your mangled body.\n\n
+                  ${gameOverTxt()}`;
+                },
+                next: () => (gameData.bigBubu.has ? 23 : 6),
+              },
+              {
+                text: "Go back",
+                response: () => {
+                  return `${getYouText()} decide to head back to the base of the cliffside. You rappel down like a freaking boss.`;
+                },
+                next: () => 10,
+              },
+            ];
+
+            if (gameData.isReleasingDragon) {
+              return [
+                {
+                  text: "Release the Bubu",
+                  response: () => {
+                    // [x] TODO: Add game over text! You did it! Maybe do some more
+                    gameData.isReleasingDragon = false;
+                    // Just for scoring purposes
+                    gameData.dragonBubu.has = true;
+                    return `free bubu\n\n
+                    You focus your mind and your heart on your Bubus. Everything they mean to you. And to the world.\n\n
+                            You know these Bubus would never abandon you in your hour of need.\n\n
+                            Suddenly, a great Bubu dragon emerges from the depths. He stretches his wings and stares at you meaningfully.\n\n
+                            "Thank you, friend," he says. "I will never forget this."\n\n
+                            𓆩♡𓆪☆☆☆Congratulations! You have found ${
+                              gameData.dragonBubu.name
+                            }.☆☆☆𓆩♡𓆪\n\n
+                            ${getYouText(
+                              true
+                            )} climb onto his back and he carries you out of the cave.\n\n
+                            You fly high into the sky, and the world is yours.\n\n
+                            You are finally free.\n\n
+                            ✨✨✨✨✨✨✨✨\n\n
+                            You have won the game!\n\n
+                            ✨✨✨✨✨✨✨✨\n\n
+                            Malika, I love you SO much. You are the best thing that ever happened to me. I can't wait to spend the rest of my life with you.\n\n
+                            I hope you enjoy this game. I love you!\n\n
+                            ================================\n\n
+                            Thank you for playing "The Legend of Bubu"!\n\n
+                            ${gameOverTxt()}`;
+                  },
+                  next: () => 6,
+                },
+              ];
+            }
+
+            if (gameData.knowsSecret) {
+              options.push({
+                text: "Say the words",
+                response: () => {
+                  gameData.isReleasingDragon = true;
+                  return `You say the words, "Tiny (Boop Squiggs) Shorterly".\n\n
+                  The water begins to churn and bubble. A whirlpool forms, and you are sucked into the depths.\n\n
+                  Your Bubus are pulled away from you, and you are left alone in the dark!\n\n
+                  You find yourself in a hidden cave. It's dark and damp, and you can hear the sound of rushing water.\n\n
+                  Where could your Bubus be?`;
+                },
+                next: () => 22,
+              });
+            } else {
+              options.push({
+                text: "Say random words",
+                response: () => {
+                  return `You try to say some random words, but nothing happens. You feel a bit silly.`;
+                },
+                next: () => 22,
+              });
+            }
+
+            return options;
+          },
+        },
+
+        // NOTE: If we HAVEN'T summoned sea people..... idk what do here.... I guess we can still get crystal. sure.
+
+        // Island (South/Ocean)
+        {
+          id: 23,
+          choices: () => {
+            const options = [
+              {
+                text: "Swim back",
+                response: () =>
+                  `${getYouText(
+                    true
+                  )} hop on the Titan's back and swim back to the mainland.`,
+                next: () => 21,
+              },
+            ];
+
+            if (!gameData.hasCrystal) {
+              if (!gameData.tinyBubu.attacked) {
+                options.push({
+                  text: "Attack with Small Bubu",
+                  response: () => {
+                    gameData.tinyBubu.attacked = true;
+
+                    let txt = `${gameData.tinyBubu.name} attacks the Toad fiercely:\n\n
+                    He races around it in circles, while it swats at him no to avail. The Toad looks tired.\n\n
+                    The Toad monster is weakened.`;
+
+                    if (
+                      gameData.bigBubu.attacked &&
+                      gameData.regularBubu.attacked &&
+                      gameData.tinyBubu.attacked
+                    ) {
+                      gameData.hasCrystal = true;
+                      txt += `\n\n
+                      You grab the Dark Crystal of Power from the Toad's neck. It's heavy and cold to the touch.\n\n
+                      "We did it, boys!" you say, a tear of pride gleaming in your eye. "Let's roll!"`;
+                    }
+
+                    return txt;
+                  },
+                  next: () => 23,
+                });
+              }
+              if (!gameData.regularBubu.attacked) {
+                options.push({
+                  text: "Attack with Regular Bubu",
+                  response: () => {
+                    gameData.regularBubu.attacked = true;
+                    let txt = `${gameData.regularBubu.name} attacks the Toad fiercely:\n\n
+                    He leaps up on the Toad again and again, humping it into submission. The Toad is totally taken aback.\n\n
+                    The Toad monster is weakened.`;
+                    if (
+                      gameData.bigBubu.attacked &&
+                      gameData.regularBubu.attacked &&
+                      gameData.tinyBubu.attacked
+                    ) {
+                      gameData.hasCrystal = true;
+                      txt += `\n\n
+                      You grab the Dark Crystal of Power from the Toad's neck. It's heavy and cold to the touch.\n\n
+                      "We did it, boys!" you say, a tear of pride gleaming in your eye. "Let's roll!"`;
+                    }
+
+                    return txt;
+                  },
+                  next: () => 23,
+                });
+              }
+              if (!gameData.bigBubu.attacked) {
+                options.push({
+                  text: "Attack with Big Bubu",
+                  response: () => {
+                    gameData.bigBubu.attacked = true;
+                    let txt = `${gameData.bigBubu.name} attacks the Toad fiercely:\n\n
+                    He gives the Toad monster an enormous lick. The gentle giant! The Toad looks paralyzed.\n\n
+                    The Toad monster is weakened.`;
+                    if (
+                      gameData.bigBubu.attacked &&
+                      gameData.regularBubu.attacked &&
+                      gameData.tinyBubu.attacked
+                    ) {
+                      gameData.hasCrystal = true;
+                      txt += `\n\n
+                      You grab the Dark Crystal of Power from the Toad's neck. It's heavy and cold to the touch.\n\n
+                      "We did it, boys!" you say, a tear of pride gleaming in your eye. "Let's roll!"`;
+                    }
+                    return txt;
+                  },
+
+                  next: () => 23,
+                });
+              }
+            }
+
+            return options;
+          },
         },
       ];
 
@@ -1260,7 +1648,7 @@
         let curr = "";
 
         const terminal = document.getElementById("terminal");
-        const SPEED = 4;
+        const SPEED = 6;
 
         while (curr.length < text.length) {
           //   console.log(text[curr.length].charCodeAt(0), text[curr.length]);
@@ -1306,6 +1694,8 @@
         //   const target = document.getElementById("target");
         //   fillIn(target, firstTxt);
         // });
+
+        // document.getElementById("bubu").innerHTML = bubuAscii;
 
         makeButtons(options[0].choices);
       };
