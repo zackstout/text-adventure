@@ -24,6 +24,26 @@
         overflow: hidden;
       }
 
+      #terminal-overlay {
+        content: "";
+        position: fixed;
+        width: 80vw;
+        height: 75vh;
+        /* margin: -1rem; */
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(200, 200, 200, 0.15),
+          rgba(200, 200, 200, 0.15) 1px,
+          transparent 1px,
+          transparent 2px
+        );
+        /* No idea why this works lol: */
+        padding: 1rem;
+        margin: -1rem;
+        /* Needed to allow for scrolling: */
+        pointer-events: none;
+      }
+
       #terminal {
         width: 80vw;
         height: 75vh;
@@ -35,11 +55,12 @@
         border-radius: 4px;
         overflow: scroll;
         font-size: 18px;
+        position: relative;
       }
 
-      #terminal div {
+      /* #terminal div {
         margin: 0.5rem 0;
-      }
+      } */
 
       #buttons {
         width: 90vw;
@@ -67,6 +88,7 @@
   </head>
   <body>
     <div id="terminal">
+      <div id="terminal-overlay"></div>
       <!-- <div>Hello hello world.</div>
       <div>Please enter a script to execute.</div> -->
 
@@ -120,89 +142,137 @@
        * Maybe we still do have different tiers of tokens... So that with easy tokens you can only get first tier messages.
        * There should be some fun incentive for doing it the hard way, right?
        * The higher tier ones could be like paragraphs, specific memories, etc.
+       *
+       * Oooh maybe we should do the flashing ">_" underscore
+       *
        */
 
-      let availableTokens = 1;
+      let availableTokens = 0;
 
       const niceThings = [
         "You're doing great!",
         "You're a good person.",
         "You're a good friend.",
         "You're a good listener.",
+        "bewbz",
+        "You're a good cook.",
+        "You're a good artist.",
+        "You're a good singer.",
+        "You're a good mubu mommy.",
+        "You are doing the best at this!",
       ];
 
       const realNiceThings = [
         {
+          id: 1,
           color: "blue",
           message: "I love when you laugh, and especially when you cackle.",
         },
         {
+          id: 2,
           color: "green",
           message:
             "I love that we know how to have a good time just being together.",
         },
         {
+          id: 3,
           color: "green",
           message: "I love your beautiful olive skin and gorgeous hair.",
         },
         {
+          id: 4,
           color: "green",
           message:
             "I love that you help me figure out what to do when I don't know which we I'm s'posed to go.",
         },
         {
+          id: 5,
           color: "green",
           message:
             "I love how gigantic your heart is, and how easily you extend care to others.",
         },
         {
+          id: 6,
           color: "green",
           message:
             "I love how much you value friendship, and the care and thoughtfulness with which you treat your friends.",
         },
         {
+          id: 7,
           color: "green",
           message: "I love how you love Bubu, and how fiercely he loves you.",
         },
         {
+          id: 8,
           color: "green",
           message:
             "I love how playful you are, and how much fun we have together.",
         },
         {
+          id: 9,
           color: "green",
           message: "I love your tetas grandes.",
         },
         {
+          id: 10,
           color: "green",
           message:
             "I love your sense of adventure and your enthusiasm to get me out of the house and into new environments, exploring together.",
         },
         {
+          id: 11,
           color: "green",
-          message: "I love caring for Bubu together.",
+          message: "I love caring for Bubu together with you.",
         },
         {
+          id: 12,
           color: "green",
-          message: "I love it when you make music, and how good you are!",
+          message: "I love it when you make music, and how good you sound.",
         },
         {
+          id: 13,
           color: "green",
           message:
             "I love it when you learn new things and are excited to share them with me.",
         },
         {
-          color: "green",
-          message: "I love it when you draw, and how good you are!",
-        },
-        {
+          id: 14,
           color: "green",
           message:
-            "I love I can make you feel more confident and help you see your own beauty and strength",
+            "I love it when you draw, and how beautiful the pictures turn out.",
+        },
+        {
+          id: 15,
+          color: "green",
+          message:
+            "I love I can make you feel more confident and help you see your own beauty and strength.",
+        },
+        {
+          id: 16,
+          color: "green",
+          message: "I love when you do silly voices.",
+        },
+        {
+          id: 17,
+          color: "green",
+          message: "I love when you go monster mode with mister bubu.",
+        },
+        {
+          id: 18,
+          color: "green",
+          message:
+            "I love hearing you sing, and how beautiful your voice is, especially when it's silly bubu songs",
+        },
+        {
+          id: 19,
+          color: "green",
+          message:
+            "I love that you will go along with and encourage my silliness and playfulness, leading to true gigglefests.",
         },
       ];
 
       // Or maybe just splice them as we pick them... that's probably easier
+      // Ok yeah we're doing that, but now we'll need to handle case where we run out of realNiceThings
       const usedRealNiceIndexes = [];
 
       const firstTxt = `ls\n
@@ -246,11 +316,11 @@
               response: () => {
                 if (availableTokens < 1) {
                   const r = Math.floor(Math.random() * niceThings.length);
-                  return `Checking permissions...\n\n
+                  return `approbate.exe\n
+                  Checking permissions...\n\n
                   You need a token to run this file.\n\n
                   But you are still worthy of love and respect. 💖\n\n
-                  Here is a nice message for you: \n\n
-                  ${niceThings[r]}`;
+                  Here is a nice message for you: ${niceThings[r]}`;
                 }
                 availableTokens--;
                 const r = Math.floor(Math.random() * realNiceThings.length);
@@ -259,17 +329,23 @@
                   document.getElementsByClassName("target")
                 ).at(-1);
 
+                const niceThing = realNiceThings.splice(r, 1)[0];
+
                 // Shoot, we want to show JUST the message in this color...
                 // target.style.color = realNiceThings[r].color;
-                return `Checking permissions...\n
+                return `
+                approbate.exe\n
+                Checking permissions...\n
                 Congratulations! You have permission to run approbate.exe. \n\n
                 Fetching data...\n\n
                 Data fetched. \n\n
-                Displaying item number ${r + 1}:  \n\n
+                Displaying approbation number ${niceThing.id}:  \n\n
                 =============================\n\n
-                ${realNiceThings[r].message} \n\n
+                ${niceThing.message} \n\n
                 =============================\n\n
-                You have ${availableTokens} tokens remaining.`;
+                You have ${availableTokens} token${
+                  availableTokens === 1 ? "" : "s"
+                } remaining.`;
               },
 
               next: 2,
@@ -289,8 +365,8 @@
             {
               text: "generateTokenHard.sh",
               response: () => {
-                return `Initializing...\n\n
-                You want to do it the hard way? \n\n
+                return `generateTokenHard.sh\n
+                Initializing...\n\n
                 This is a text-based adventure where you can earn tokens by doing good things for yourself and others. \n\n
                 Welcome to the jungle. \n\n`;
               },
@@ -302,17 +378,19 @@
           id: 3,
           choices: [
             {
-              text: "Just let me have this one. (Enter password)",
+              text: "Just let me have this one. (Guess password)",
               response: () => {
                 availableTokens++;
                 return `BIG BOOBIES\n\n
                 Okay, okay. I'll give you a token. Don't sweat it chief.\n\n
-              You have ${availableTokens} tokens now. \n\n`;
+              You have ${availableTokens} token${
+                  availableTokens === 1 ? "" : "s"
+                } now. \n\n`;
               },
               next: 2,
             },
             {
-              text: "I want to do it the hard way. (Cancel)",
+              text: "Nevermind, I want to do it the hard way. (Cancel)",
               response: () => `Now that's what I like to hear. \n\n
               You can earn tokens by running generateTokenHard.sh \n\n
               Good luck and Godspeed.`,
@@ -427,19 +505,29 @@
 
         while (curr.length < text.length) {
           //   console.log(text[curr.length].charCodeAt(0), text[curr.length]);
-          const code = text[curr.length].charCodeAt(0);
-          curr += text[curr.length];
+          const char = text[curr.length];
+          const code = char.charCodeAt(0);
           // 10 is the code for "/n", I suppose we could also just check that
           if (code === 10) {
+            curr += char;
             curr += "<br>";
             terminal.scrollTop = terminal.scrollHeight;
+          } else if (/\p{Extended_Pictographic}/gu.test(char)) {
+            // Huh, doesn't work.
+            // Trying to make emoji a bit smaller.
+            console.log("emoji!");
+            curr += `<span style="transform: scale(0.5)">${char}</span>`;
+          } else {
+            curr += char;
           }
           el.innerHTML = curr;
           const waitTime = Math.random() * SPEED + SPEED;
           await new Promise((resolve) => setTimeout(resolve, waitTime));
         }
 
-        el.innerHTML += `<div>
+        // Huh, why doesn't adding a <br> here seem to work? Oh duh, we needed 2 haha. Not sure I love it.
+        // Actually no, yeah, I really like it. Helps break things up and read it more easily.
+        el.innerHTML += `<br><br><div>
         <span>[guest@local]# </span>
         <span class="target"></span>
       </div>`;
