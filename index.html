@@ -18,7 +18,8 @@
         flex-direction: column;
         align-items: center;
         height: 100vh;
-        font-family: "VT323";
+        /* font-family: "VT323"; */
+        font-family: monospace;
         margin: 0;
         padding: 0;
         overflow: hidden;
@@ -75,7 +76,8 @@
         background: gray;
         color: white;
         cursor: pointer;
-        font-family: "VT323";
+        /* font-family: "VT323"; */
+        font-family: monospace;
         font-size: 1.2rem;
         padding: 0.5rem;
         opacity: 0.8;
@@ -145,7 +147,42 @@
        *
        * Oooh maybe we should do the flashing ">_" underscore
        *
+       * I like RNG affecting the game. Weather decided by initial rng? Maybe it changes?
        */
+
+      const bubuAscii = `,,,,,,,,,.. ......... ... .,/((((((((//////////*//((((/////(((///////////(//////
+      ,,,,,,..   ..,*****,,..,/((((((////((((////////**/((//////((((//**//////////////
+      ..,,,,,.....,***/****/(((((/(//(/*/////////////***///*////(((/****//////////////
+      *,...,.,,,...,**//((#((((((///((((///((/((((/(////////////((/********///////////
+      ***,**,,,,,...*/###((##((((((#/#(#//(((##//(/(((////*////////********///////////
+      *,,**,,,,,,*(#####(((((((((((/#(((/**(/////////(//(////*//******,,,*////////////
+      ...,**,...,*,**/((///(//////((//(*******,,*,,,..,,*///**///**,,,*///////////*///
+      .. ,,...........,((/(((////***(****,***,,.        ..,***,*****...,,,*///////////
+        ,,..........,(*///***(**. (//,//*,*/***,..        .,,,,***,,......,,**********
+       .,........,*,,**/**//*.  .,/////**//**///,.   ., ,    .,,,,,.   .....,**/////**
+      .,......... .,**//*//*.. .*////(//*******(*** ...(/   ..,,,,..    ....,,**//////
+       .,.. .....,***,*(/*(,,. ,**(/****,/*,,**////*.      .**,,,,*,..,,,**,,,****,,**
+      ,..     .,****,,.,,/*,,**/(/,,.,,,,*,,,.,*//***,* .   .,..,*/*****....,,,////*//
+          ..,,******,,..**//(((/.     ..      .,*///**/(*. ,*****/***(,.  ..,**,,**,**
+      ...,,,,********,..*(#/((,. ........      .,**/**/(/**/(***//****,,.   ..,**,....
+      ,,,,********,,,..,/(((/*,**,. .       ...,****///*(/////(/*/******,,.      .,..
+      ,************,**,,*/(((*,/.             ,,/**///((////(//////***,,....        .
+      ,,,**********,.   //(/(/               .***//*//**/*/////*(/**,,,.      ....
+      ,,,,,,*******,.  ,/***((,.             ,*/////(/*********,(/*****.
+      ,,,,,,,,****,,.. *..*(((/*           .,,***/((//(**/*,,,*/*//**. .       .
+      ,,,,,,,,,*,,,,...   */(/*,,.     . ...,.,**/*////**,.*,,,,****,.        .
+      ,,,,,,,,,,,,,,,,.    ,,*,,....      ....,,**,///*,.,...,.*.,,
+      ,,,,,,,,,,,,,,.,,,.   ...,..   ....  . ....,,,,....,**.,,.
+      ,,,,,,,,,,,,,,,....    .........,,,,*,,.,... .,..,... ...,
+      ,,,,,,,,,,,,,,,,,..          ........,.......,.,,......  .
+      ,,,,,,,,,,,,,,,,,,.          .........,......./.,, .. .
+      ,,,,,,,,,,,,,,,,,.              ,...,***,...,*,.....,.,            ..    .
+      ,,,,,,,,,,,,,,,,,.                  .*,,,..,,,.*, .... ..  ..
+      ,,,,,,,,,,,,*,,,,..                 ,/,,, **..,     .. . .             .
+      ,,,,,,,,,,,,,,,,,... . ..             /,..//**   .  ..  .  ..
+      ,,,,,,,,,,,,,,,*,,.........            *,.,,.  ..,. .  . .  .
+      ,,,,,,,,,,,,,,,*,,..........       . ...  .    ....  . ...  . ..
+      ,,,,,,,,,,,,,**,,..........              . .....,.. ...... .. ..               `;
 
       let availableTokens = 0;
 
@@ -183,7 +220,7 @@
           id: 4,
           color: "green",
           message:
-            "I love that you help me figure out what to do when I don't know which we I'm s'posed to go.",
+            "I love that you help me figure out what to do when I don't know which way I'm s'posed to go.",
         },
         {
           id: 5,
@@ -211,7 +248,7 @@
         {
           id: 9,
           color: "green",
-          message: "I love your tetas grandes.",
+          message: "Me encantan tus tetas grandes.",
         },
         {
           id: 10,
@@ -245,7 +282,7 @@
           id: 15,
           color: "green",
           message:
-            "I love I can make you feel more confident and help you see your own beauty and strength.",
+            "I love when I can make you feel more confident and help you see your own beauty and strength.",
         },
         {
           id: 16,
@@ -255,7 +292,8 @@
         {
           id: 17,
           color: "green",
-          message: "I love when you go monster mode with mister bubu.",
+          message:
+            "I love when you go monster mode with mister bubu and let him know who's gonna get him.",
         },
         {
           id: 18,
@@ -269,47 +307,177 @@
           message:
             "I love that you will go along with and encourage my silliness and playfulness, leading to true gigglefests.",
         },
+        {
+          id: 20,
+          color: "green",
+          message:
+            "I love how industrious you are when you put your mind to something.",
+        },
       ];
 
       // Or maybe just splice them as we pick them... that's probably easier
       // Ok yeah we're doing that, but now we'll need to handle case where we run out of realNiceThings
+
+      // TODO: "try again" doesn't work from forest.
+      // TODO: should "auto-scroll" whenever something happens really. not just a "<br>" element.
+      // TODO: test what happens when you go back to north after dealing with farmer -- also clean up the "feed him" stuff haha
+
       const usedRealNiceIndexes = [];
 
       const firstTxt = `ls\n
-      README.md\n
-      approbate.exe\n
-      generateTokenEasy.sh\n
-      generateTokenHard.sh`;
+            README.md\n
+            approbate.exe\n
+            generateTokenEasy.sh\n
+            generateTokenHard.sh`;
+
+      const comminglers = [
+        "sadness",
+        "peacefulness",
+        "tranquility",
+        "hope",
+        "despair",
+        "loss",
+        "atonement",
+        "desire",
+        "longing",
+        "love",
+        "fear",
+      ];
+
+      const gameData = {
+        farmerIsIncapicated: false,
+        hasSeenGenerator: false,
+        // gold: 0,
+        hasKey: false,
+        mushroomsEaten: 0,
+        isDead: false,
+        hasFish: false,
+        fireIsLit: false,
+        hasRoastFish: false,
+        regularBubu: {
+          has: false,
+          name: "Sir Bubu the Regular Sized",
+          hasHat: false,
+          hasBloodlust: false,
+          hasGluttonous: false,
+        },
+        tinyBubu: {
+          has: false,
+          name: "Ridiculously Small Bubu",
+          hasFairyFriendship: false,
+          hasFierceFace: false,
+        },
+        bigBubu: {
+          has: false,
+          name: "Bubu the Gargantuan (Slumbering Titan)",
+          hasLunarAttunement: false,
+          hasWolfsong: false,
+        },
+        dragonBubu: {
+          has: false,
+        },
+      };
+
+      const getYouText = () => {
+        const arr = ["You"]
+          .concat([
+            gameData.regularBubu.has ? gameData.regularBubu.name : "",
+            gameData.tinyBubu.has ? gameData.tinyBubu.name : "",
+            gameData.bigBubu.has ? gameData.bigBubu.name : "",
+          ])
+          .filter(Boolean);
+        return arr.reduce((acc, val, i) => {
+          if (i === 0) {
+            return val;
+          }
+          if (i === arr.length - 1) {
+            return acc + " and " + val;
+          }
+          return acc + ", " + val;
+        }, "");
+      };
+
+      const gameOverTxt = () => {
+        const bubusAcquired = Object.values(gameData).filter((val) =>
+          typeof val === "object" ? val.has : false
+        ).length;
+        const score =
+          bubusAcquired === 0
+            ? 0
+            : bubusAcquired === 1
+            ? 2
+            : bubusAcquired === 2
+            ? 5
+            : bubusAcquired === 3
+            ? 10
+            : 20;
+        availableTokens += score;
+
+        if (score === 20) {
+          return `You have done it! You have found all the Bubus and have accumulated ${score} tokens. Congratulations!`;
+        }
+        return `You have died a horrible death. Game over.\n\n
+        On the bright side, you have accumulated ${score} tokens. Congratulations!`;
+      };
+
+      const startGameTxt = () => {
+        // return bubuAscii;
+        // return getYouText();
+
+        const adjs = [
+          comminglers[Math.floor(Math.random() * comminglers.length)],
+          comminglers[Math.floor(Math.random() * comminglers.length)],
+        ];
+
+        // Clear out game data:
+        gameData.isDead = false;
+        gameData.farmerIsIncapicated = false;
+        gameData.hasSeenGenerator = false;
+        gameData.hasKey = false;
+        gameData.regularBubu.has = false;
+        gameData.tinyBubu.has = false;
+        gameData.bigBubu.has = false;
+        gameData.hasFish = false;
+        gameData.fireIsLit = false;
+        gameData.hasRoastFish = false;
+
+        return `begin\n\n
+                You awaken in a strange land. You are standing in a clearing. The sun is shining, and the air is warm.\n\n
+                There is a sweet scent of honeysuckle and peppermint. In the atmosphere ${adjs[0]} is commingled with ${adjs[1]}.\n\n
+                EGAD! YOU SUDDENLY REALIZE ALL YOUR BUBUS ARE MISSING! They must have run off...\n\n\n
+                You can see a path leading in each direction: north, east, west, and south.
+      `;
+      };
 
       const options = [
         {
           id: 1,
-          choices: [
+          choices: () => [
             {
               text: "pwd",
               response: () => `pwd\n\n
-              ~/winky-bottoms/coding/fun/approbator-app-2`,
-              next: 1,
+                    ~/winky-bottoms/coding/fun/approbator-app-2`,
+              next: () => 1,
             },
             {
               text: "ls",
               response: () => firstTxt,
-              next: 2,
+              next: () => 2,
             },
           ],
         },
         {
           id: 2,
-          choices: [
+          choices: () => [
             {
               text: "README.md",
               response: () => `cat README.md\n\n
-              We are proud to present the Approbator 2.0 (patent pending)!\n\n
-              This is a simple terminal-based application that will provide you with positive affirmations and encouragement.\n\n
-              To get started, simply run approbate.exe\n\n
-              If you need more tokens, you can generate them with generateTokenEasy.sh or generateTokenHard.sh\n\n
-              𓆩♡𓆪☆☆☆ Enjoy and have fun!☆☆☆𓆩♡𓆪`,
-              next: 2,
+                    We are proud to present the Approbator 2.0 (patent pending)!\n\n
+                    This is a simple terminal-based application that will provide you with positive affirmations and encouragement.\n\n
+                    To get started, simply run approbate.exe\n\n
+                    If you need more tokens, you can generate them with generateTokenEasy.sh or generateTokenHard.sh\n\n
+                    𓆩♡𓆪☆☆☆ Enjoy and have fun!☆☆☆𓆩♡𓆪`,
+              next: () => 2,
             },
             {
               text: "approbate.exe",
@@ -317,10 +485,10 @@
                 if (availableTokens < 1) {
                   const r = Math.floor(Math.random() * niceThings.length);
                   return `approbate.exe\n
-                  Checking permissions...\n\n
-                  You need a token to run this file.\n\n
-                  But you are still worthy of love and respect. 💖\n\n
-                  Here is a nice message for you: ${niceThings[r]}`;
+                        Checking permissions...\n\n
+                        You need a token to run this file.\n\n
+                        But you are still worthy of love and respect. 💖\n\n
+                        Here is a nice message for you: ${niceThings[r]}`;
                 }
                 availableTokens--;
                 const r = Math.floor(Math.random() * realNiceThings.length);
@@ -334,146 +502,735 @@
                 // Shoot, we want to show JUST the message in this color...
                 // target.style.color = realNiceThings[r].color;
                 return `
-                approbate.exe\n
-                Checking permissions...\n
-                Congratulations! You have permission to run approbate.exe. \n\n
-                Fetching data...\n\n
-                Data fetched. \n\n
-                Displaying approbation number ${niceThing.id}:  \n\n
-                =============================\n\n
-                ${niceThing.message} \n\n
-                =============================\n\n
-                You have ${availableTokens} token${
+                      approbate.exe\n
+                      Checking permissions...\n
+                      Congratulations! You have permission to run approbate.exe. \n\n
+                      Fetching data...\n\n
+                      Data fetched. \n\n
+                      Displaying approbation number ${niceThing.id}:  \n\n
+                      =============================\n\n
+                      ${niceThing.message} \n\n
+                      =============================\n\n
+                      You have ${availableTokens} token${
                   availableTokens === 1 ? "" : "s"
                 } remaining.`;
               },
 
-              next: 2,
+              next: () => 2,
             },
             {
               text: "generateTokenEasy.sh",
               response: () => {
                 return `generateTokenEasy.sh\n\n
-                Really? You want to take the easy way out? \n\n
-                You can do better than that. \n\n
-                You can earn tokens by doing good things for yourself and others. \n\n
-                Are you sure you want to generate a token?\n\n
-                Enter password:`;
+                      Really? You want to take the easy way out? \n\n
+                      You can do better than that. \n\n
+                      You can earn tokens by doing good things for yourself and others. \n\n
+                      Are you sure you want to generate a token?\n\n
+                      Enter password:`;
               },
-              next: 3,
+              next: () => 3,
             },
             {
               text: "generateTokenHard.sh",
               response: () => {
                 return `generateTokenHard.sh\n
-                Initializing...\n\n
-                This is a text-based adventure where you can earn tokens by doing good things for yourself and others. \n\n
-                Welcome to the jungle. \n\n`;
+                      Initializing...\n\n
+                      This is a text-based adventure where you can earn tokens by doing good things for yourself and others. \n\n
+                      Welcome to the jungle...`;
               },
-              next: 4,
+              next: () => 4,
             },
           ],
         },
         {
           id: 3,
-          choices: [
+          choices: () => [
             {
               text: "Just let me have this one. (Guess password)",
               response: () => {
                 availableTokens++;
                 return `BIG BOOBIES\n\n
-                Okay, okay. I'll give you a token. Don't sweat it chief.\n\n
-              You have ${availableTokens} token${
+                      Okay, okay. I'll give you a token. Don't sweat it chief.\n\n
+                    You have ${availableTokens} token${
                   availableTokens === 1 ? "" : "s"
-                } now. \n\n`;
+                } now.`;
               },
-              next: 2,
+              next: () => 2,
             },
             {
               text: "Nevermind, I want to do it the hard way. (Cancel)",
               response: () => `Now that's what I like to hear. \n\n
-              You can earn tokens by running generateTokenHard.sh \n\n
-              Good luck and Godspeed.`,
-              next: 2,
+                    You can earn tokens by running generateTokenHard.sh \n\n
+                    Good luck and Godspeed.`,
+              next: () => 2,
             },
           ],
         },
         {
           id: 4,
-          choices: [
+          choices: () => [
             {
-              text: "...Okay? (Y)",
+              text: "...Okay?",
               response: () => {
-                return "You awaken in a strange land.";
+                return startGameTxt();
               },
-              next: 5,
+              next: () => 5,
             },
             // This is unnecessary but kind of funny I think
             {
-              text: "I'm not ready for this. (N)",
+              text: "I'm not ready for this.",
               response: () => {
-                return "You have died a horrible death. Game over.";
+                return gameOverTxt();
               },
-              next: 6,
+              next: () => 6,
             },
           ],
         },
         // START OF GAME -- first 4 choices
         {
           id: 5,
-          choices: [
+          choices: () => [
             {
-              text: "",
-              response: () => {},
-              next: 7,
+              text: "Go north to Bubu farms.",
+              response: () => {
+                let txt = `go north\n\n
+                      ${getYouText()} head north along a meandering path through a lush green meadow. You smell apple pie ahead.\n\n
+                      Eventually you arrive at a quaint farm.`;
+                if (!gameData.farmerIsIncapicated) {
+                  txt += `\n\n
+                    You see a farmer tending to his crops. He waves at you and smiles.`;
+                }
+                return txt;
+              },
+              next: () => 7,
             },
             {
-              text: "",
-              response: () => {},
-              next: 8,
+              text: "Go east to Mount Bubu.",
+              response: () => {
+                return `go east\n\n
+                ${getYouText()} trek eastward along a winding path, next to a bubbling brook. The air is misty.\n\n
+                      You arrive at the base of a large mountain. You see a sign that reads "Mount Bubu".\n\n
+                      You see enormous paw prints in the dirt.\n\n
+                      There is a gondola leading to the top of the mountain, and a mysterious cave entrance at the base.\n\n
+                      You feel a sense of foreboding.`;
+              },
+              next: () => 8,
             },
             {
-              text: "",
-              response: () => {},
-              next: 9,
+              text: "Go west to the Bubu forest.",
+              response: () => {
+                let txt = `go west\n\n
+                ${getYouText()} walk westward through a dense forest. The air is cool and damp.\n\n
+                      You see a clearing ahead, and as you draw nearer, you notice tiny pawprints tracing erratic paths.\n\n
+                      You have the eerie feeling that you are being watched.\n\n
+                      There is a patch of mushrooms growing in a circle. They seem to be glowing softly.`;
+
+                if (gameData.regularBubu.has) {
+                  txt += `\n\n
+                        Good thing we found ${gameData.regularBubu.name}! He's got a great nose for poisonous mushrooms! He won't lead us astray.`;
+                } else {
+                  txt += `\n\n
+                        If only we had ${gameData.regularBubu.name} with us! He's got a great nose for poisonous mushrooms! He wouldn't lead us astray.`;
+                }
+
+                return txt;
+              },
+              next: () => 9,
             },
             {
-              text: "",
-              response: () => {},
-              next: 10,
+              text: "Go south to the Bubu sea.",
+              response: () => {
+                return `go south\n\n
+                ${getYouText()} walk southward along a sandy beach. The sun is warm and the air is salty.\n\n
+                      You see a small boat bobbing in the water. You feel a sense of longing.\n\n
+                      Far in the distance, through the mist you can make out a small island.\n\n
+                      Its lighthouse sends out a comforting beam.`;
+              },
+              next: () => 10,
             },
           ],
         },
         // END OF GAME
         {
           id: 6,
-          choices: [
+          choices: () => [
             {
               text: "Try again.",
               response: () => {
-                return "You awaken in a strange land.";
+                return startGameTxt();
               },
+              next: () => 5,
             },
             {
               text: "Exit game.",
               response: () => {
                 return "Goodbye.";
               },
-              next: 1,
+              next: () => 1,
             },
           ],
         },
+        // NORTH
         {
           id: 7,
+          choices: () => {
+            let options = [
+              {
+                text: "Have a look around.",
+                // Maybe if hasKey, you just go in directly?
+                response: () => {
+                  gameData.hasSeenGenerator = true;
+
+                  if (gameData.hasKey && !gameData.regularBubu.has) {
+                    gameData.regularBubu.has = true;
+                    return `look around\n\n
+                    With the mysterious key in hand, you go straight to the generator and unlock the door.\n\n
+                    You descend the stairs and find yourself in a dimly lit room. You see a large machine with a series of levers and buttons.\n\n
+                    It seems to be hooked up to a treadmill. You see a Bubu running on the treadmill, powering the generator.\n\n
+                   It's ${gameData.regularBubu.name}!\n\n
+                   He is tied up and looks frightened. You untie him and he jumps into your arms.\n\n
+                     "Thank you, thank you," he says. "I thought I was a goner."\n\n
+                     "I was lured here by the scent of apple pie..."\n\n
+                     𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.regularBubu.name}.☆☆☆𓆩♡𓆪
+                    `;
+                  }
+                  return `look around\n\n
+                    You take a look around the farm. It's a peaceful place. The farmer has a variety of crops growing, and a few animals milling about.\n\n
+                    You see a small barn, a chicken coop, and a vegetable garden.\n\n
+                    The farmer is still tending to his crops.\n\n
+                    You walk around behind the barn and notice a generator. It's humming quietly. There are some stairs leading down, with a locked door at the bottom.\n\n`;
+                },
+                next: () => 7,
+              },
+              {
+                text: "Leave.",
+                response: () => {
+                  return `leave\n\n
+                    ${getYouText()} decide to leave the farm and continue on your journey.`;
+                },
+                next: () => 5,
+              },
+            ];
+
+            if (!gameData.farmerIsIncapicated) {
+              options.unshift({
+                text: "Talk to the farmer.",
+                response: () => {
+                  return `talk to the farmer\n\n
+                      You approach the farmer. He flashes a friendly smile.\n\n
+                      "Hello there, stranger," he says. "What brings you to my farm?"`;
+                },
+                next: () => 11,
+              });
+            }
+
+            if (
+              gameData.regularBubu.has &&
+              !gameData.regularBubu.hasBloodlust &&
+              !gameData.regularBubu.hasGluttonous
+            ) {
+              options = [
+                {
+                  text: "Leave.",
+                  response: () => {
+                    return `leave\n\n
+                    ${getYouText()} decide to leave the farm and continue on your journey.`;
+                  },
+                  next: () => 5,
+                },
+                // TODO
+                {
+                  text: "Feed Bubu the pie.",
+                },
+                {
+                  text: "Feed Bubu the farmer.",
+                },
+              ];
+            }
+
+            return options;
+          },
         },
+        // EAST
         {
           id: 8,
+          choices: () => [
+            {
+              text: "Ride the gondola.",
+              response: () => {
+                let txt = `${getYouText()} decide to ride the gondola to the top of the mountain. It's a peaceful ride, and the view is breathtaking.\n\n
+                At the top you find a hermit who has been living there for years. He tells you that he has seen a Bubu wandering around the mountain.\n\n
+                "He seemed sleepy." the hermit says.\n\n
+                There is a fire circle with wood`;
+                if (gameData.fireIsLit) {
+                  txt += ` and a fire is crackling.`;
+                } else {
+                  txt += ` and a fire pit.`;
+                }
+                return txt;
+              },
+              next: () => 12,
+            },
+            {
+              text: "Investigate the cave.",
+              response: () => {
+                return `You approach the foreboding cave. Large pawprints are leading toward it.\n\n
+                You hear a low snoozing growl coming from inside.\n\n
+                You come to a gate. It's guarded by a strange little goblin. He looks at you with a glint in his eye.\n\n
+                "You'll need a key to get in here," he says. "And I don't think you have it."\n\n
+                He cackles and disappears into the darkness.\n\n
+                You notice a "Roast Fish Enthusiast" calendar hung up on the wall. It is flipped to a Plump-butt Porgy picture.`;
+              },
+              next: () => 13,
+            },
+            {
+              text: "Explore the river.",
+              response: () => {
+                return `You follow the river upstream. It's a beautiful walk, and you feel at peace.\n\n
+                You come across a small waterfall. You see a fish swimming in the pool below.`;
+              },
+              next: () => 17,
+            },
+            {
+              text: "Go back.",
+              response: () => {
+                return `${getYouText()} blow this popsicle stand.`;
+              },
+              next: () => 5,
+            },
+          ],
         },
+        // WEST
         {
           id: 9,
+          choices: () => {
+            if (gameData.isDead) {
+              // We just want to like...forward them to 6 in this case... huh
+              return [
+                {
+                  text: "Try again.",
+                  response: () => {
+                    return startGameTxt();
+                  },
+                  next: () => 5,
+                },
+                {
+                  text: "Exit game.",
+                  response: () => {
+                    return "Goodbye.";
+                  },
+                  next: () => 1,
+                },
+              ];
+            }
+            return [
+              {
+                text: "Eat a mushroom.",
+                response: () => {
+                  const successRate = gameData.regularBubu.has ? 100 : 30;
+                  const didSucceed = Math.random() * 100 < successRate;
+                  if (didSucceed) {
+                    gameData.mushroomsEaten++;
+
+                    if (gameData.mushroomsEaten === 3) {
+                      gameData.tinyBubu.has = true;
+                      return `eat shroom\n\n
+                      Aha. This mushroom was safe to eat as well!\n\n
+                      The forest comes alive with thousands of small fiery lights. At first you are mesmerized.\n\n
+                        But then you realize that they are forming a swarm and heading toward you!\n\n
+                        "Why have you trifled with our Fungi Forageable Feast, stranger?" rumbles a strange and booming voice.\n\n
+                        "We are preparing for the Fungi Foreagble Fiesta! You have nearly doomed us!"\n\n
+                        And then, slowly, the swarm of lights begins to dissipate.\n\n
+                        A small pair of lights flutters toward you. As they near, you see that they are carrying a tiny chariot.\n\n
+                        "We are the Fungi Forageable Feast Fire Faires," says the tiny charioteer. "Our king wishes to speak with you."\n\n
+                        You are whisked away to a clearing where a tiny throne has been erected. A tiny king sits upon it.\n\n
+                        That king is one of your Bubus!\n\n
+                        𓆩♡𓆪☆☆☆Congratulations! You have found ${gameData.tinyBubu.name}.☆☆☆𓆩♡𓆪\n\n
+                        "Let's get the eff outta here," says ${gameData.tinyBubu.name}. "I've had enough of these fairy freaks."`;
+                    }
+                    if (gameData.mushroomsEaten > 3) {
+                      return `eat shroom\n\n
+                      Aha. Another one safe to eat. It's like you're a mushroom expert now.\n\n
+                      The fairies are visibly upset. But you don't care about their Fiesta. You have more important things to worry about.`;
+                    }
+                    return `Aha. This mushroom was safe to eat. You can feel more eyes watching you.`;
+                  }
+
+                  gameData.isDead = true;
+                  return `eat shroom\n\n
+                  Oof, that mushroom turned out to be super poisonous.\n\n
+                  ${gameOverTxt()}`;
+                },
+                // Really not sure of this... seems like it should depend on the success... but we can always send back to same place...
+                // Yeah, so this node is just gonna end up doing a lot of work. Whatever.
+                next: () => 9,
+              },
+              {
+                text: "Leave.",
+                response: () => {
+                  return `leave\n\n
+                    ${getYouText()} decide to leave the forest and head back to the clearing.`;
+                },
+                next: () => 5,
+              },
+            ];
+          },
         },
+        // SOUTH
         {
           id: 10,
+          choices: () => [
+            {
+              text: "Climb up the cliffside.",
+              response: () => {
+                return ``;
+              },
+            },
+            {
+              text: "Go to the beach.",
+              response: () => {
+                return ``;
+              },
+            },
+            {
+              text: "Go back.",
+              response: () => {
+                return ``;
+              },
+            },
+          ],
+        },
+        // Farm choices
+        {
+          id: 11,
+          choices: () => {
+            const dinnerText = `follow\n\n
+            You follow the farmer into his home. He offers you a seat at the table and brings you a plate of food.\n\n
+            "I hope you like it," he says. "It's just a simple meal, but it's made with love."`;
+            const options = [
+              {
+                text: "Bean him. Ask questions later.",
+                response: () => {
+                  gameData.farmerIsIncapicated = true;
+                  gameData.hasKey = true;
+                  return `bean\n\n
+                  You punch the farmer in the face. He falls to the ground, unconscious.\n\n
+                  Something tells you he deserved it.\n\n
+                  You search his clothes and find a mysterious key.\n\n
+                  (Mysterious Key added to inventory.)\n\n`;
+                },
+                next: () => 7,
+              },
+              {
+                text: "Ask him about the Bubus.",
+                response: () => {
+                  return `query bubus\n\n
+                  You ask the farmer if he has seen any of your Bubus. He shakes his head.\n\n
+                    "I'm sorry, I haven't seen any Bubus around here. But I'll keep an eye out for them."`;
+                },
+                next: () => 11,
+              },
+              {
+                text: "Claim to be the city magistrate.",
+                response: () => {
+                  return (
+                    `lie\n\n
+                    You tell the farmer that you are the city magistrate, and you are here to inspect his farm.\n\n
+                    He buys it hook, line and sinker.\n\n
+                    "I'm sorry, ma'am," he says. "I didn't realize. Please, come in."\n\n` +
+                    dinnerText
+                  );
+                },
+                next: () => 14,
+              },
+              {
+                text: "Flatter and charm him.",
+                response: () => {
+                  return (
+                    `flatter\n\n
+                    You tell the farmer that his farm is the most beautiful farm you have ever seen. You tell him that he is the most handsome farmer you have ever met.\n\n
+                    He blushes and stammers, "Oh, well, thank you, ma'am. I don't know what to say. Would you like to come inside for a meal?"\n\n` +
+                    dinnerText
+                  );
+                },
+                next: () => 14,
+              },
+            ];
+
+            if (gameData.hasSeenGenerator) {
+              options.push({
+                text: "Ask him about the generator.",
+                response: () => {
+                  return `query generator\n\n
+                  You ask the farmer about the generator. He looks at you suspiciously.\n\n
+                    "Just your typical generator, ma'am. Nothing to see here."`;
+                },
+                next: () => 11,
+              });
+            }
+
+            return options;
+          },
+        },
+        // Gondola (Mountain)
+        {
+          id: 12,
+          choices: () => {
+            const options = [
+              // TODO: Die here hahha
+              {
+                text: "Admire the view.",
+                response: () => {
+                  return ``;
+                },
+                next: () => 12,
+              },
+              {
+                text: "Go back",
+                response: () => {
+                  // TODO
+
+                  return ``;
+                },
+                next: () => 8,
+              },
+            ];
+
+            if (gameData.tinyBubu.has) {
+              options.push({
+                text: "Ask Bubu to summon his fairy friends to make a fire.",
+                response: () => {
+                  gameData.fireIsLit = true;
+                  // TODO
+
+                  return ``;
+                },
+                next: () => 12,
+              });
+            }
+
+            if (gameData.fireIsLit && gameData.hasFish) {
+              options.push({
+                text: "Cook the fish.",
+                response: () => {
+                  gameData.hasRoastFish = true;
+                  return `You add the fish to the fire and cook it. It smells delicious.\n\n
+                  (Roasted fish added to inventory.)`;
+                },
+                next: () => 12,
+              });
+            }
+
+            return options;
+          },
+        },
+        // Cave (Mountain)
+        {
+          id: 13,
+          choices: () => {
+            const options = [
+              {
+                text: "Try to open the gate.",
+                response: () => {
+                  return `The gate shudders and creaks, but it doesn't budge. The goblin laughs at you.`;
+                },
+                next: () => 13,
+              },
+              {
+                text: "Attack him.",
+                response: () => {
+                  return `${getYouText()} attack the goblin. He is surprisingly strong, and he fights back with a fury.\n\n
+                    Your vision goes black.\n\n
+                    ${gameOverTxt()}`;
+                },
+                next: () => 6,
+              },
+              {
+                text: "Go back.",
+                response: () => {
+                  return `${getYouText()} go back to the base of the mountain.`;
+                },
+                next: () => 8,
+              },
+            ];
+
+            if (gameData.hasRoastFish) {
+              options.push({
+                text: "Offer the fish to the goblin.",
+                response: () => {
+                  return `You offer the fish to the goblin. He looks at it hungrily.\n\n
+                    "I'll let you in if you give me that fish," he says.\n\n
+                    You hand it over, and he devours it in one bite.\n\n
+                    "Mmm, that was good," he says. "You can go in now."\n\n
+                    You enter the cave. It's dark and damp. You hear a low growling coming from the shadows.\n\n
+                    You approach and find a sleeping Bubu. It's ${
+                      gameData.bigBubu.name
+                    }!\n\n
+                    You wake him up and he stretches, yawning.\n\n
+                    "I was having the best dream," he says. "I was howling at the moon."\n\n
+                    𓆩♡𓆪☆☆☆Congratulations! You have found ${
+                      gameData.bigBubu.name
+                    }.☆☆☆𓆩♡𓆪
+                    "Let's ride, bud." ${getYouText()} hop on his back and he carries you out of the cave.`;
+                },
+                next: () => 8,
+              });
+            }
+
+            return options;
+          },
+        },
+        // Dinner
+        {
+          id: 14,
+          choices: () => {
+            return [
+              {
+                text: "Sit down for a meal.",
+                response: () => {
+                  return `eat\n\n
+                  You eat the meal the farmer has prepared for you.\n\n
+                    It's delicious, and you feel a sense of warmth and comfort.\n\n
+                    The farmer invites you to spend the night.`;
+                },
+                next: () => 16,
+              },
+              {
+                text: "Ask to use the bathroom.",
+                response: () => {
+                  return `bathroom\n\n
+                  You ask the farmer if you can use the bathroom. He looks at you suspiciously.\n\n
+                    "Sure thing, down the hall," he says. "But don't go poking around where you shouldn't be."`;
+                },
+                next: () => 15,
+              },
+            ];
+          },
+        },
+        // Bathroom
+        {
+          id: 15,
+          choices: () => [
+            {
+              text: "Poke around where you shouldn't be.",
+              response: () => {
+                return `poke around\n\n
+                  You poke around where you shouldn't be. You find a little book in a drawer, titled "Diddler Diaries".\n\n
+                Whoa! It turns out this farmer is a real sicko. You read a few entries and feel sick to your stomach.\n\n
+                You hear a voice behind you. "What are you doing?" It's the farmer. He looks angry.\n\n
+                He karate chops you in the throat. You fall to the ground, gasping for air.\n\n
+                ${gameOverTxt()}`;
+              },
+              next: () => 6,
+            },
+            {
+              text: "Leave.",
+              response: () => {
+                return `leave\n\n
+                ${getYouText()} decide to leave the farm and continue on your journey.`;
+              },
+              next: () => 5,
+            },
+            {
+              text: "Use the bathroom.",
+              response: () => {
+                return `You go to the bathroom. It's nothing special, but not embarrassing.\n\n
+                You don't have time to go poking around because you gotta poop really bad.\n\n
+                After what probably feels like a suspiciously long time, you wash your hands and return to the table.\n\n
+                You eat the meal the farmer has prepared for you.\n\n
+                It's delicious, and you feel a sense of warmth and comfort.\n\n
+                The farmer invites you to spend the night.`;
+              },
+              next: () => 16,
+            },
+          ],
+        },
+        // After dinner
+        {
+          id: 16,
+          choices: () => [
+            {
+              text: "Sleep over.",
+              response: () => {
+                return `You fall asleep at the table. The farmer covers you with a blanket and lets you sleep.\n\n
+                The next morning you wake up mysteriously back at the central clearing.`;
+              },
+              next: () => 5,
+            },
+            {
+              text: "Leave.",
+              response: () => {
+                return `You decide to jet out of this shithole.\n\n
+                "I'm outtie 5000, dickbags" you say, as you leave the farm.`;
+              },
+              next: () => 5,
+            },
+            {
+              text: "Sneak around.",
+              response: () => {
+                gameData.hasKey = true;
+
+                return `You pretend to fall asleep. The farmer goes to bed. You sneak around the house, and you find a mysterious key.\n\n
+                (Mysterious Key added to inventory.)\n\n
+                You go back outside.`;
+              },
+              next: () => 7,
+            },
+          ],
+        },
+        // River (Mountain)
+        {
+          id: 17,
+          choices: () => {
+            const options = [
+              // TODO: Poems or some shit, different random quotes about water
+              {
+                text: "Admire the water.",
+                response: () => {
+                  return `You admire the water. It truly is beautiful.`;
+                },
+                next: () => 17,
+              },
+              {
+                text: "Go back.",
+                response: () => {
+                  return `${getYouText()} return to the mountain.`;
+                },
+                next: () => 8,
+              },
+            ];
+
+            if (gameData.regularBubu.has && !gameData.hasFish) {
+              options.push({
+                text: "Ask Bubu to fetch a fish.",
+                response: () => {
+                  gameData.hasFish = true;
+                  return `You ask ${gameData.regularBubu.name} to fetch a fish. He does so, floundering at first, but ultimately succeeding.\n\n
+                  He hauls the fish from the water onto the riverside and grins at you.\n\n
+                  "Good dog, ${gameData.regularBubu.name}!" you say.\n\n
+                  (Fish added to inventory.)`;
+                },
+                next: () => 17,
+              });
+            }
+
+            return options;
+          },
+        },
+        {
+          id: 18,
+        },
+        {
+          id: 19,
+        },
+        {
+          id: 20,
+        },
+        {
+          id: 21,
+        },
+        {
+          id: 22,
         },
       ];
 
@@ -481,7 +1238,7 @@
         const buttons = document.getElementById("buttons");
         const terminal = document.getElementById("terminal");
         buttons.innerHTML = "";
-        choices.forEach((choice) => {
+        choices().forEach((choice) => {
           const button = document.createElement("button");
           button.innerHTML = choice.text;
           button.addEventListener("click", async () => {
@@ -490,8 +1247,10 @@
             ).at(-1);
             buttons.innerHTML = "";
             await fillIn(target, choice.response());
-            makeButtons(options[choice.next - 1].choices);
-            // terminal.scrollTop = terminal.scrollHeight;
+
+            // NOTE: depends on fact that ids go in order in the list of nodes
+            makeButtons(options[choice.next() - 1].choices);
+            terminal.scrollTop = terminal.scrollHeight;
           });
           buttons.appendChild(button);
         });
@@ -501,7 +1260,7 @@
         let curr = "";
 
         const terminal = document.getElementById("terminal");
-        const SPEED = 5;
+        const SPEED = 4;
 
         while (curr.length < text.length) {
           //   console.log(text[curr.length].charCodeAt(0), text[curr.length]);
@@ -512,12 +1271,17 @@
             curr += char;
             curr += "<br>";
             terminal.scrollTop = terminal.scrollHeight;
-          } else if (/\p{Extended_Pictographic}/gu.test(char)) {
-            // Huh, doesn't work.
-            // Trying to make emoji a bit smaller.
-            console.log("emoji!");
-            curr += `<span style="transform: scale(0.5)">${char}</span>`;
-          } else {
+          }
+          //   else if (/\p{Extended_Pictographic}/gu.test(char)) {
+          //     // Huh, doesn't work.
+          //     // Trying to make emoji a bit smaller.
+          //     console.log("emoji!");
+          //     curr += `<span style="transform: scale(0.5)">${char}</span>`;
+          //   }
+          //   else if (char === " ") {
+          //     curr += "&nbsp;";
+          //   }
+          else {
             curr += char;
           }
           el.innerHTML = curr;
@@ -528,9 +1292,9 @@
         // Huh, why doesn't adding a <br> here seem to work? Oh duh, we needed 2 haha. Not sure I love it.
         // Actually no, yeah, I really like it. Helps break things up and read it more easily.
         el.innerHTML += `<br><br><div>
-        <span>[guest@local]# </span>
-        <span class="target"></span>
-      </div>`;
+              <span>[guest@local]# </span>
+              <span class="target"></span>
+            </div>`;
 
         return Promise.resolve();
       };
