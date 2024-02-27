@@ -523,7 +523,10 @@
           return `You have done it! You have found all the Bubus and have accumulated ${score} tokens. Congratulations!`;
         }
         return `You have died a horrible death. Game over.\n\n
-        On the bright side, you have accumulated ${score} tokens. Congratulations!`;
+        On the bright side, you have accumulated ${score} tokens. Congratulations!\n\n
+        Now you have ${availableTokens} token${
+          availableTokens === 1 ? "" : "s"
+        } in total.`;
       };
 
       const startGameTxt = () => {
