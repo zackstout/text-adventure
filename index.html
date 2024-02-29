@@ -177,6 +177,19 @@
        * Oooh maybe we should do the flashing ">_" underscore
        *
        * I like RNG affecting the game. Weather decided by initial rng? Maybe it changes?
+       *
+       *
+       * =====================
+       *
+       * Woow, we did it! I think!
+       *
+       * Only 23 nodes. That's not bad!
+       *
+       * We have the 3 storylines, and the 4th is the end. I LIKE IT!
+       *
+       * Probably about...8 hours total? Maybe 10? Coming up with story was hardest part probably.
+       *
+       * Though the coding did get a bit complex in places. Will be fun to figure out how to streamline, abstract.
        */
 
       const bubuAscii = `,,,,,,,,,.. ......... ... .,/((((((((//////////*//((((/////(((///////////(//////
@@ -239,7 +252,93 @@
         "Let's get this shit",
       ];
 
-      const realNiceThingsCyril = [];
+      const realNiceThingsCyril = [
+        {
+          id: 1,
+          message:
+            "Cyril is an impeccable keeper of plants; he is a caring and attentive steward to living things in his ambit.",
+        },
+        {
+          id: 2,
+          message:
+            "Cyril is an amazing dog owner: he is a leader to his pack, commanding obedience with an affectionate gaze.",
+        },
+        {
+          id: 3,
+          message:
+            "Cyril is a craftsman. He makes things skillfully and thoughtfully. He plans and executes with precision.",
+        },
+        {
+          id: 4,
+          message:
+            "Cyril is a great artist. He is deeply creative and imaginative, and skilled in the arts he chooses.",
+        },
+        {
+          id: 5,
+          message:
+            "Cyril is an incredible friend. He is supportive and caring. He is there for those who need him.",
+        },
+        {
+          id: 6,
+          message:
+            "Cyril is a caretaker. He welcomes all with warmth. His heart is open.",
+        },
+        {
+          id: 7,
+          message:
+            "Cyril expresses gratitude for the things of meaning to him.",
+        },
+        {
+          id: 8,
+          message:
+            "Cyril is a great listener. I feel heard and understood when I speak with him.",
+        },
+        {
+          id: 9,
+          message:
+            "Cyril is an excellent cook. He puts time and care into food he prepares. ",
+        },
+        {
+          id: 10,
+          message:
+            "Cyril is incredibly emotionally attuned. He can feel things that most others do not. His soul is poetic.",
+        },
+        {
+          id: 11,
+          message:
+            "Cyril strives to be helpful wherever he can. He will always lend himself where he can.",
+        },
+        {
+          id: 12,
+          message:
+            "Cyril is anxious because he wants to be the best version of himself. He shouldn't sweat it so much. He is already so good. He is the best.",
+        },
+        {
+          id: 13,
+          message:
+            "Cyril is a veteran problem solver. I know he will approach any problem he tackles with cleverness and creativity.",
+        },
+        {
+          id: 14,
+          message:
+            "Cyril is a great teacher. He is patient and kind, and he is good at explaining things.",
+        },
+        {
+          id: 15,
+          message:
+            "Cyril has a great ear for music, and it is in his heart to play.",
+        },
+        {
+          id: 16,
+          message:
+            "Cyril is incredibly intelligent and insightful. I love to hear him articulate his mind.",
+        },
+        {
+          id: 17,
+          message:
+            "Cyril has immense strength. He is a force to be reckoned with. He is not to be trifled with. He is a capable match for any problem that would be foolish enough to face him.",
+        },
+      ];
 
       const realNiceThingsKyle = [];
 
@@ -406,6 +505,9 @@
             "I love how courageous you are when the situation calls for it. You are protective and unafraid, like a bear.",
         },
       ];
+
+      // This can be swapped to handle nice things for others
+      let realNiceThingsDisplay = realNiceThings;
 
       // Or maybe just splice them as we pick them... that's probably easier
       // Ok yeah we're doing that, but now we'll need to handle case where we run out of realNiceThings
@@ -599,22 +701,38 @@
             {
               text: "approbate.exe",
               response: () => {
+                const stockIdx = Math.floor(Math.random() * niceThings.length);
+
                 if (availableTokens < 1) {
-                  const r = Math.floor(Math.random() * niceThings.length);
                   return `approbate.exe\n
                         Checking permissions...\n\n
                         You need a token to run this file.\n\n
                         But you are still worthy of love and respect. 💖\n\n
-                        Here is a nice message for you: ${niceThings[r]}`;
+                        Here is a nice message for you: ${niceThings[stockIdx]}`;
                 }
                 availableTokens--;
-                const r = Math.floor(Math.random() * realNiceThings.length);
+                const randomNiceThingIdx = Math.floor(
+                  Math.random() * realNiceThingsDisplay.length
+                );
 
                 const target = Array.from(
                   document.getElementsByClassName("target")
                 ).at(-1);
 
-                const niceThing = realNiceThings.splice(r, 1)[0];
+                const randomNiceThing = realNiceThingsDisplay.splice(
+                  randomNiceThingIdx,
+                  1
+                )[0];
+
+                if (!randomNiceThing) {
+                  return `approbate.exe\n
+                      Checking permissions...\n
+                      Congratulations! You have permission to run approbate.exe. \n\n
+                      Fetching data...\n\n
+                      Egad. This is embarrassing. We have run out of bespoke messages for you.
+                      But you are still worthy of love and respect. 💖\n\n
+                      Here is a nice message for you: ${niceThings[stockIdx]}`;
+                }
 
                 // Shoot, we want to show JUST the message in this color...
                 // target.style.color = realNiceThings[r].color;
@@ -624,9 +742,9 @@
                       Congratulations! You have permission to run approbate.exe. \n\n
                       Fetching data...\n\n
                       Data fetched. \n\n
-                      Displaying approbation number ${niceThing.id}:  \n\n
+                      Displaying approbation number ${randomNiceThing.id}:  \n\n
                       =============================\n\n
-                      ${niceThing.message} \n\n
+                      ${randomNiceThing.message} \n\n
                       =============================\n\n
                       You have ${availableTokens} token${
                   availableTokens === 1 ? "" : "s"
@@ -1765,6 +1883,22 @@
         // });
 
         // document.getElementById("bubu").innerHTML = bubuAscii;
+
+        const url = window.location.href;
+        const query = url.split("?")[1];
+        if (query) {
+          const parts = query.split("&");
+          parts.forEach((part) => {
+            const [key, value] = part.split("=");
+            if (key === "user" && value === "cyril") {
+              // Say nice things about Cyril!
+              console.log("Now saying nice things about Cyril");
+              realNiceThingsDisplay = realNiceThingsCyril;
+            }
+          });
+        }
+
+        console.log(window.location.href);
 
         makeButtons(options[0].choices);
       };
